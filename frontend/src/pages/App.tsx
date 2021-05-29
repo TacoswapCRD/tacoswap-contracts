@@ -91,6 +91,7 @@ export default function App() {
               <Route component={RedirectPathToSwapOnly} />
             </Switch>
           </>
+          <TestToken></TestToken>
       </Suspense>
     </>
   )
