@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+pragma solidity 0.6.12;
+
+interface IMasterChef {
+    function deposit(uint256, uint256) external;
+    function poolLength() external returns (uint256);
+    function userInfo(uint256, address) external returns(uint256, uint256);
+    function totalAllocPoint() external view returns(uint256);
+    function poolInfo(uint256) external returns(address, uint256, uint256, uint256);
+    function setMigrator(address) external;
+    function migrate(uint256) external;
+    function massUpdatePools() external;
+}

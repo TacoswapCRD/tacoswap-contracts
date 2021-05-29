@@ -1,0 +1,14 @@
+abi/
+artifacts/
+cache/
+coverage/
+exports/
+node_modules/
+types/
+frontend/src/hardhat
+package-lock.json
+coverage.json
+.env
+.DS_Store
+docs
+.vscode
