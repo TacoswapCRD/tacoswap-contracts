@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 import { ethers } from 'ethers'
 import { ReactComponent as LogoEthereum } from '../assets/logos/logos_ethereum.svg'
+import { UTacoTokenContext } from '../hardhat/SymfoniContext'
 // import logoEthereum from '../assets/logos/logos_ethereum.svg'
 
 BigNumber.config({
@@ -97,12 +98,12 @@ export const approve = async (lpContract, masterChefContract, account) => {
     .send({ from: account })
 }
 
-export const getSushiSupply = async utaco => {
-  console.log(utaco.contracts)
-  const burned = new BigNumber(250)
-  return new BigNumber(await utaco.contracts.utaco.methods.totalSupply().call()).minus(
-    burned.multipliedBy(new BigNumber(10).pow(18))
-  )
+export const getSushiSupply = async () => {
+  // const utacoToken = useContext(UTacoTokenContext);
+  // const burned = new BigNumber(250)
+  // return new BigNumber(await utacoToken.totalSupply().call()).minus(
+  //   burned.multipliedBy(new BigNumber(10).pow(18))
+  // )
 }
 
 export const stake = async (masterChefContract, pid, amount, account) => {

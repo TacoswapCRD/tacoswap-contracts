@@ -39,22 +39,25 @@ const Balances = () => {
     }
   }, [stakedValue])
 
-  const UTaco = useContext(UTacoTokenContext)
-  console.log("🚀 ~ file: index.tsx ~ line 44 ~ useEffect ~ UTaco", UTaco)
+  const UTacoToken = useContext(UTacoTokenContext)
   useEffect(() => {
     async function fetchTotalSupply() {
-      const supply = await getSushiSupply(utaco)
+      const burned = new BigNumber(250)
+      if (!UTacoToken.instance) {
+        return new BigNumber(0);
+      }
+      const supply = new BigNumber((await UTacoToken.instance.totalSupply()).toString()).minus(
+        burned.multipliedBy(new BigNumber(10).pow(18))
+      )
       console.log('🚀 ~ file: index.tsx ~ line 44 ~ fetchTotalSupply ~ supply', supply)
       return supply
     }
 
-    if (utaco) {
-      fetchTotalSupply().then(res => {
-        setTotalSupply(() => res)
-        console.log("🚀 ~ file: index.tsx ~ line 52 ~ fetchTotalSupply ~ res", res)
-      })
-    }
-  }, [utaco])
+    fetchTotalSupply().then(res => {
+      setTotalSupply(() => res)
+      console.log("🚀 ~ file: index.tsx ~ line 52 ~ fetchTotalSupply ~ res", res)
+    })
+  }, [])
 
   const tacoBalance = (balance: number) => {
   console.log("🚀 ~ file: index.tsx ~ line 56 ~ tacoBalance ~ balance", balance)
