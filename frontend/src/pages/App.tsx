@@ -6,7 +6,6 @@ import Polling from '../components/Header/Polling'
 import URLWarning from '../components/Header/URLWarning'
 import Popups from '../components/Popups'
 import Balances from '../pages/Home'
-import Web3ReactManager from '../components/Web3ReactManager'
 import { ApplicationModal } from '../state/application/actions'
 import { useModalOpen, useToggleModal } from '../state/application/hooks'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
@@ -52,7 +51,6 @@ export default function App() {
         <Popups />
         <Polling />
         <TopLevelModals />
-        <Web3ReactManager>
           <>
             <Switch>
               <Route exact strict path="/swap" component={Swap} />
@@ -93,9 +91,7 @@ export default function App() {
               <Route component={RedirectPathToSwapOnly} />
             </Switch>
           </>
-        </Web3ReactManager>
       </Suspense>
-      <TestToken></TestToken>
     </>
   )
 }

@@ -16,7 +16,7 @@
 // // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals();
 
-import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
+import { createWeb3ReactRoot } from '@web3-react/core'
 import 'inter-ui'
 import React, { StrictMode } from 'react'
 import { isMobile } from 'react-device-detect'
@@ -79,7 +79,7 @@ function Updaters() {
 ReactDOM.render(
   <StrictMode>
     <FixedGlobalStyle />
-    <Symfoni autoInit={true} >
+    <Symfoni autoInit={true} loadingComponent={<h1>LOADING...</h1>}>
 
       <Blocklist>
         <Provider store={store}>

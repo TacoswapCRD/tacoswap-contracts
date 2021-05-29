@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Symfoni autoInit={true} >
+        {/* <Symfoni autoInit={true} > */}
           <img src={logo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.tsx</code> and save to reload.
@@ -22,8 +22,8 @@ function App() {
             Learn React
         </a>
 
-          <TestToken></TestToken>
-        </Symfoni>
+          {/* <TestToken></TestToken> */}
+        {/* </Symfoni> */}
       </header>
     </div>
   );

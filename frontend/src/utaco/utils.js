@@ -20,6 +20,7 @@ export const getMasterChefAddress = utaco => {
   return utaco && utaco.masterChefAddress
 }
 export const getSushiAddress = utaco => {
+console.log("🚀 ~ file: utils.js ~ line 23 ~ getSushiAddress", getSushiAddress)
   return utaco && utaco.sushiAddress
 }
 export const getWethContract = utaco => {
@@ -31,6 +32,7 @@ export const getMasterChefContract = utaco => {
 }
 
 export const getSushiContract = utaco => {
+console.log("🚀 ~ file: utils.js ~ line 34 ~ getSushiContract", getSushiContract)
   return utaco && utaco.contracts && utaco.contracts.utaco
 }
 
