@@ -7,7 +7,7 @@ const amount = utils.parseEther("10");
 const deadline = new Date().getTime() + 10;
 let accounts;
 
-describe("TestToken contract: ", function () {
+xdescribe("TestToken contract: ", function () {
     before("Before All: ", async () => {
         accounts = await getNamedSigners();
         this.token = await getContract("TestToken", accounts.caller);
