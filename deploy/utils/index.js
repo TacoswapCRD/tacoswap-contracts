@@ -105,7 +105,7 @@ async function contractDeploy({ ethers, upgrades, deployments, getNamedAccounts,
 
         contract = await ethers.getContract(options.contractName, deployer)
 
-        printDeployInfo(options.contractName, contract.address, options.chainId, await contract.owner())
+        printDeployInfo(options.contractName, contract.address, chainId, await contract.owner())
 
         return;
     }
@@ -127,7 +127,7 @@ async function contractDeploy({ ethers, upgrades, deployments, getNamedAccounts,
     // Transfer ownership of contract to owner
     await(await contract.transferOwnership(owner)).wait()
 
-    printDeployInfo(options.contractName, contract.address, options.chainId, await contract.owner())
+    printDeployInfo(options.contractName, contract.address, chainId, await contract.owner())
 }
 
 module.exports = { nConfig, eConfig, contractDeploy }

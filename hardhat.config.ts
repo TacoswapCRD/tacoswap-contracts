@@ -123,6 +123,7 @@ const config: HardhatUserConfig = {
   dependencyCompiler: {
     paths: [
       '@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol',
+      '@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol',
       '@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol'
     ],
     keep: false
