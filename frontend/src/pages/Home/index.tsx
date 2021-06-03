@@ -17,11 +17,12 @@ import { useWeb3React } from '@web3-react/core'
 import PageHeader from '../../components/PageHader'
 import useTheme from '../../hooks/useTheme'
 import { StyledFlex } from '../../components/swap/styleds'
-import { UTacoTokenContext } from '../../hardhat/SymfoniContext'
+import { UTacoTokenContext, SignerContext, CurrentAddressContext  } from '../../hardhat/SymfoniContext'
 
 const Balances = () => {
   const theme = useTheme()
   const [totalSupply, setTotalSupply] = useState(new BigNumber(0))
+  const [utacoBalance, setUTacoBalance] = useState(new BigNumber(0))
   const [totalLocked, setTotalLocked] = useState(new BigNumber(0))
   const { stakedValue } = useFarms()
   const utaco = useUTaco()
@@ -31,7 +32,9 @@ const Balances = () => {
     0: 'TACO-ETH UNI V2 LP',
     1: 'USDT-ETH SLP'
   })
-
+  const [signer, setSigner] = useContext(SignerContext)
+  const [currentAddress, setCurrentAddress] = useContext(CurrentAddressContext)
+  const UTacoToken = useContext(UTacoTokenContext)
   useEffect(() => {
     if (stakedValue.length) {
       const totalLocked = stakedValue.reduce((t: any, n: any) => t.plus(n.totalWethValue), new BigNumber(0))
@@ -39,7 +42,6 @@ const Balances = () => {
     }
   }, [stakedValue])
 
-  const UTacoToken = useContext(UTacoTokenContext)
   useEffect(() => {
     async function fetchTotalSupply() {
       const burned = new BigNumber(250)
@@ -59,8 +61,24 @@ const Balances = () => {
     })
   }, [])
 
+  useEffect(() => {
+    async function fetchUTacoBalance() {
+      const burned = new BigNumber(250)
+      if (!UTacoToken.instance) {
+        return new BigNumber(0);
+      }
+      const utacoBalance = new BigNumber((await UTacoToken.instance.balanceOf(currentAddress)).toString())
+      console.log('🚀 ~ file: index.tsx ~ line 44 ~ fetchTotalSupply ~ supply', utacoBalance)
+      return utacoBalance
+    }
+
+    fetchUTacoBalance().then(res => {
+      setUTacoBalance(() => res)
+      console.log("🚀 ~ file: index.tsx ~ line 52 ~ fetchTotalSupply ~ res", res)
+    })
+  }, [])
+
   const tacoBalance = (balance: number) => {
-  console.log("🚀 ~ file: index.tsx ~ line 56 ~ tacoBalance ~ balance", balance)
     if (balance < 1000000) {
       return balance
     }
@@ -91,7 +109,7 @@ const Balances = () => {
                       <div style={{ width: '100%', justifyContent: 'space-between' }}>
                         <Label text="Your UTACO Balance" />
                         <StyledFlex justifyContent="space-between" mb="0">
-                          <Value size="lg" value={!!account ? getBalanceNumber(sushiBalance) : 'Locked'} />
+                          <Value size="lg" value={!!currentAddress ? tacoBalance(getBalanceNumber(utacoBalance)) : 'Locked'} />
                           <StyledConvertions>
                             <StyledParagraph mt="-10px">
                               <Value

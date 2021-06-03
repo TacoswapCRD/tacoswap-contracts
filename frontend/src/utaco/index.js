@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js/bignumber'
-import Web3 from 'web3'
 
 BigNumber.config({
   EXPONENTIAL_AT: 1000,
@@ -7,4 +6,4 @@ BigNumber.config({
 })
 
 export { UTaco } from './UTaco.js'
-export { Web3, BigNumber }
+export { BigNumber }

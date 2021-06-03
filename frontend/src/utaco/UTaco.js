@@ -1,9 +1,9 @@
-import Web3 from 'web3'
 import BigNumber from 'bignumber.js'
 import { Contracts } from './lib/contracts'
 import { contractAddresses } from './lib/constants'
 import { Account } from './lib/accounts'
 import { EVM } from './lib/evm'
+import { ethers } from 'ethers'
 
 export class UTaco {
   constructor(provider, networkId, testing, options) {
@@ -11,15 +11,12 @@ export class UTaco {
 
     if (typeof provider === 'string') {
       if (provider.includes('wss')) {
-        realProvider = new Web3.providers.WebsocketProvider(provider, options.ethereumNodeTimeout || 10000)
+        realProvider =  ethers.getDefaultProvider()
       } else {
-        realProvider = new Web3.providers.HttpProvider(provider, options.ethereumNodeTimeout || 10000)
+        realProvider = provider
       }
-    } else {
-      realProvider = provider
-    }
 
-    this.web3 = new Web3(realProvider)
+    this.web3 = ethers.getDefaultProvider()
 
     if (testing) {
       this.testing = new EVM(realProvider)
@@ -33,7 +30,7 @@ export class UTaco {
     this.sushiAddress = contractAddresses.taco[networkId]
     this.masterChefAddress = contractAddresses.masterChef[networkId]
     this.wethAddress = contractAddresses.weth[networkId]
-  }
+  }}
 
   async resetEVM() {
     this.testing.resetEVM(this.snapshot)

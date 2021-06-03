@@ -35,6 +35,9 @@ export function useETHBalances(
     addresses.map(address => [address])
   )
 
+  console.log('\ss', results, addresses);
+  
+
   return useMemo(
     () =>
       addresses.reduce<{ [address: string]: CurrencyAmount }>((memo, address, i) => {

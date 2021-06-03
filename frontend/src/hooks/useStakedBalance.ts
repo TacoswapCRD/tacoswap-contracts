@@ -11,6 +11,7 @@ const useStakedBalance = (pid: number) => {
   const { account } = useWeb3React()
   const sushi = useUTaco()
   const masterChefContract = getMasterChefContract(sushi)
+  console.log("🚀 ~ file: useStakedBalance.ts ~ line 14 ~ useStakedBalance ~ masterChefContract", masterChefContract)
 
   const fetchBalance = useCallback(async () => {
     const balance = await getStaked(masterChefContract, pid, account)

@@ -41,9 +41,13 @@ import { isTradeBetter } from '../../utils/trades'
 import AdvancedSwapDetailsDropdown from '../../components/swap/AdvancedSwapDetailsDropdown'
 import Button from '../../components/Button/Button'
 import Layout from '../../components/layout/Layout'
+import { CurrentAddressContext } from "../../hardhat/SymfoniContext"
+
 
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
+  const [account, setAccount] = useContext(CurrentAddressContext)
+  
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -67,7 +71,9 @@ export default function Swap() {
       return !Boolean(token.address in defaultTokens)
     })
 
-  const { account } = useActiveWeb3React()
+  // const { account } = useActiveWeb3React()
+  console.log(account);
+  
   const theme = useContext(ThemeContext)
 
   // toggle wallet when disconnected
