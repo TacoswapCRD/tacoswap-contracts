@@ -68,6 +68,7 @@ export default function Swap() {
     })
 
   const { account } = useActiveWeb3React()
+  console.log("🚀 ~ file: index.tsx ~ line 71 ~ Swap ~ account", account)
   const theme = useContext(ThemeContext)
 
   // toggle wallet when disconnected
