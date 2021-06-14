@@ -176,7 +176,7 @@ const FarmCard = ({ farm }: any) => {
                 <StyledTitle title={farm.name}>{TextShorter(farm.name)}</StyledTitle>
                 <div style={{ height: '28px' }}>
                   <StyledParagraph>
-                    Deposit {farm.lpToken.toUpperCase()} Earn {farm.earnToken.toUpperCase()}
+                    Deposit {farm?.lpToken?.toUpperCase()} Earn {farm?.earnToken?.toUpperCase()}
                   </StyledParagraph>
                 </div>
               </div>

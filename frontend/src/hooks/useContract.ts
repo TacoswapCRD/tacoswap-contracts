@@ -8,7 +8,6 @@ import SUSHI_ABI from '../constants/utacoAbis/utaco.json'
 import { ChainId, WETH } from '@uniswap/sdk'
 import { SUSHI_ADDRESS, BAR_ADDRESS } from '@sushiswap/sdk'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
-import { useMemo } from 'react'
 import { GOVERNANCE_ADDRESS, MERKLE_DISTRIBUTOR_ADDRESS, UNI } from '../constants'
 import {
   ARGENT_WALLET_DETECTOR_ABI,
@@ -25,11 +24,17 @@ import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { V1_EXCHANGE_ABI, V1_FACTORY_ABI, V1_FACTORY_ADDRESSES } from '../constants/v1'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
+import { ProviderContext } from "./../hardhat/SymfoniContext";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
+
 
 // returns null on errors
 export function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-  const { library, account } = useActiveWeb3React()
+  const [library] = useContext(ProviderContext)
 
+  const account = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+  
   return useMemo(() => {
     if (!address || !ABI || !library) return null
     try {
@@ -101,7 +106,7 @@ export function usePairContract(pairAddress?: string, withSignerIfPossible?: boo
 }
 
 export function useMulticallContract(): Contract | null {
-  const { chainId } = useActiveWeb3React()
+  const chainId = 1
   return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
 }
 

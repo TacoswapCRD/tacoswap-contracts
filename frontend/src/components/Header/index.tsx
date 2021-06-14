@@ -1,5 +1,5 @@
 import { ChainId } from '@uniswap/sdk'
-import React, { useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Text } from 'rebass'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +19,7 @@ import Modal from '../Modal'
 import UniBalanceContent from './UniBalanceContent'
 import { UniIcon } from '../../pages/Farm/components/styled'
 import { ExternalLink } from '../../theme'
+import { CurrentAddressContext } from "../../hardhat/SymfoniContext"
 
 const HeaderFrame = styled.div`
   align-items: center;
@@ -325,10 +326,13 @@ const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
 }
 
 export default function Header() {
-  const { account, chainId } = useActiveWeb3React()
+  const chainId = 1;
+  const [account, setAccount] = useContext(CurrentAddressContext)
   const { t } = useTranslation()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  console.log(userEthBalance);
+  
 
   const toggleClaimModal = useToggleSelfClaimModal()
 

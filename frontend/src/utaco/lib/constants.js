@@ -90,24 +90,24 @@ export const supportedPools = [
     price: 0.00014,
     icon: '🥇',
     bonus: 8
+  },
+  {
+    pid: 1,
+    lpAddresses: {
+      1: '0x526914CE1611849b9e1133Ff8F8b03A8fAa295Cb',
+      3: '0xd35d3560b51273361a5feb0183619a4b53cb683b'
+    },
+    tokenAddresses: {
+      1: '0xcAaa93712BDAc37f736C323C93D4D5fDEFCc31CC',
+      3: '0x253e8aa11d65f91af5b47e87efdaf369e1c1c413'
+    },
+    active: true,
+    name: 'CRD-ETH UniSwap',
+    symbol: 'CRD-ETH UNI V2 LP',
+    tokenSymbol: 'CRD',
+    icon: '💧',
+    bonus: 4
   }
-  // {
-  //   pid: 1,
-  //   lpAddresses: {
-  //     1: '0x526914CE1611849b9e1133Ff8F8b03A8fAa295Cb',
-  //     3: '0xd35d3560b51273361a5feb0183619a4b53cb683b'
-  //   },
-  //   tokenAddresses: {
-  //     1: '0xcAaa93712BDAc37f736C323C93D4D5fDEFCc31CC',
-  //     3: '0x253e8aa11d65f91af5b47e87efdaf369e1c1c413'
-  //   },
-  //   active: true,
-  //   name: 'CRD-ETH UniSwap',
-  //   symbol: 'CRD-ETH UNI V2 LP',
-  //   tokenSymbol: 'CRD',
-  //   icon: '💧',
-  //   bonus: 4
-  // }
   // // {
   // //   pid: 7,
   // //   lpAddresses: {

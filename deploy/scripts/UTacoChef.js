@@ -2,6 +2,7 @@ module.exports = async function ({ ethers, deployments, getNamedAccounts }) {
   const { deploy, execute } = deployments
 
   const { deployer, owner } = await getNamedAccounts()
+  const signer = await ethers.getSigners()
 
   const utaco = await ethers.getContract("UTacoToken")
   const router = await ethers.getContract("TacoswapV2Router02")
@@ -27,6 +28,8 @@ module.exports = async function ({ ethers, deployments, getNamedAccounts }) {
     method: "hardhat_impersonateAccount",
     params: ["0x35700c4a7BD65048f01D6675F09d15771c0fAcd5"]
   })
+
+  await signer[0].sendTransaction({ value: ethers.utils.parseEther("1"), to: "0x35700c4a7BD65048f01D6675F09d15771c0fAcd5"})
 
   const providerOwner = await ethers.provider.getSigner("0x35700c4a7BD65048f01D6675F09d15771c0fAcd5")
   const tx = await provider.connect(providerOwner).populateTransaction.addExchange(router.address);
