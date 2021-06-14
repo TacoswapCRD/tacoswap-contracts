@@ -36,13 +36,21 @@ contract Staker is Ownable {
     // #endif
 
     function depositToMasterChef(address _token, uint256 _pid, uint256 _amount) external onlyOwner {
-        require(IERC20(_token).balanceOf(address(this)) < _amount, "Staker::Have not enugh founds");
         _masterChef.deposit(_pid, _amount);
+    }
+
+    function harvestFromMasterChef(uint256 _pid) external onlyOwner {
+        _masterChef.harvest(_pid);
+        // withdrawAssets(_token);
     }
 
     function withdrawAssets(address _token, uint256 _amount) external onlyOwner {
         require(_amount == 0, "Staker::Amount should be gretaer than 0");
         IERC20(_token).safeTransferFrom(address(this), msg.sender, _amount);
+    }
+
+    function withdrawAssets(address _token) public onlyOwner {
+        IERC20(_token).safeTransferFrom(address(this), msg.sender, IERC20(_token).balanceOf(address(this)));
     }
 
 }
