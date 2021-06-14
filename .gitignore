@@ -1,4 +1,5 @@
 abi/
+!/frontend/src/utaco/lib/abi
 artifacts/
 cache/
 coverage/
