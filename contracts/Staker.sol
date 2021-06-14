@@ -41,7 +41,6 @@ contract Staker is Ownable {
 
     function harvestFromMasterChef(uint256 _pid) external onlyOwner {
         _masterChef.harvest(_pid);
-        // withdrawAssets(_token);
     }
 
     function withdrawAssets(address _token, uint256 _amount) external onlyOwner {
