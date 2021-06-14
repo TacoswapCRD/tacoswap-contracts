@@ -30,7 +30,7 @@ const eConfig = async () => {
     } catch (error) {
         preDeployedProxyJSON = "undefined"
     }
-    
+
     if (preDeployedProxyJSON == "undefined") {
         if (process.env.UPGRADEABLE_PROXY_ADDRESS === '') {
             return {
@@ -38,14 +38,14 @@ const eConfig = async () => {
                 IS_PROXY: process.env.IS_PROXY === "true",
             }
         }
-        
+
         return {
             IS_UPGRADE: process.env.IS_UPGRADE === "true",
             IS_PROXY: process.env.IS_PROXY === "true",
             UPGRADEABLE_PROXY_ADDRESS: process.env.UPGRADEABLE_PROXY_ADDRESS
         }
     }
-    
+
     const lastDeployedAddress = preDeployedProxyJSON.proxies[preDeployedProxyJSON.proxies.length - 1].address;
     return {
         IS_UPGRADE: process.env.IS_UPGRADE === "true",
@@ -61,73 +61,89 @@ function printDeployInfo(contractName, contractAddress, chainId, owner) {
 
 function printUpgradeInfo(contractName, contractAddress, proxyAddress, chainId) {
     const preDeployedProxyJSON = require("../../.openzeppelin/" + nConfig[chainId])
-    
+
     console.log(`${contractName} address: ${contractAddress}`)
     console.log(`Proxy address: ${proxyAddress}`)
     console.log(`AdminProxy address: ${preDeployedProxyJSON.admin.address}`)
 }
 
-async function contractDeploy({ ethers, upgrades, deployments, getNamedAccounts, ethernal, getChainId }, options) {
+async function contractDeploy({ ethers, upgrades, deployments, getNamedAccounts, ethernal, getChainId }, options, callback = () => { }) {
     const { deploy } = deployments
     const chainId = await getChainId();
     const { deployer, owner } = await getNamedAccounts()
-    
-    let contract;
-    
-    if (options.isUpgrade) { 
+
+    if (typeof (options) == "string") {
+        options = {
+            contractName: options,
+            isUpgrade: false,
+            isProxy: false,
+            args: [],
+        }
+    }
+
+    let contract, args = options.args || [];
+
+    if (options.isUpgrade) {
         const ContractFactory = await ethers.getContractFactory(options.contractName);
         const contractAddress = await upgrades.prepareUpgrade(options.upgradeableProxyAddress, ContractFactory);
         const proxy = await upgrades.upgradeProxy(options.upgradeableProxyAddress, ContractFactory);
-        
+
         printUpgradeInfo(options.contractName, contractAddress, proxy.address, chainId);
-        
+
         return;
     }
-    
+
     if (chainId !== '31337') {
         if (options.isProxy) {
             const ContractFactory = await ethers.getContractFactory(options.contractName);
-            contract = await upgrades.deployProxy(ContractFactory, []);
-            
+            contract = await upgrades.deployProxy(ContractFactory, [...options.args]);
+
             await contract.deployed();
-            
-            printDeployInfo(options.contractName, contract.address, chainId, await contract.owner())
-            
+
+            callback(contract);
+            printDeployInfo(options.contractName, contract.address, chainId, deployer)
+
             return;
         }
 
         await deploy(options.contractName, {
             from: deployer,
-            args: [],
+            args: [...args],
             log: true,
             deterministicDeployment: false
         })
 
         contract = await ethers.getContract(options.contractName, deployer)
 
-        printDeployInfo(options.contractName, contract.address, chainId, await contract.owner())
-
+        callback(contract);
+        printDeployInfo(options.contractName, contract.address, chainId, deployer)
         return;
     }
 
     await deploy(options.contractName, {
         from: deployer,
-        args: [],
+        args: [...args],
         log: true,
         deterministicDeployment: false
     })
 
     contract = await ethers.getContract(options.contractName, deployer)
+    contractOwner = deployer
 
-    await ethernal.push({
-        name: options.contractName,
-        address: contract.address
-    });
+    if (typeof contract.transferOwnership === "function") {
+        // Transfer ownership of contract to owner
+        await contract.transferOwnership(owner)
+        contractOwner = owner;
+    }
 
-    // Transfer ownership of contract to owner
-    await(await contract.transferOwnership(owner)).wait()
-
+    callback(contract);
     printDeployInfo(options.contractName, contract.address, chainId, await contract.owner())
+    if (process.env.IS_ETHERNAL_ON === "true") {
+        await ethernal.push({
+            name: options.contractName,
+            address: contract.address
+        });
+    }
 }
 
 module.exports = { nConfig, eConfig, contractDeploy }
