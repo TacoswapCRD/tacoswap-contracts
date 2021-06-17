@@ -18,7 +18,7 @@ describe("Staker", function () {
         expect(await this.staker.owner()).to.equal(accounts.owner.address);
     })
 
-    describe("depositToMasterChef function: ", async () => {
+    xdescribe("depositToMasterChef function: ", async () => {
         it("Should deposit on UTacoChef", async () => {
             const startBlock = parseInt(await this.utacoChef.startBlock());
             await this.uTaco.connect(accounts.holder).transfer(this.utacoChef.address, this.uTaco.totalSupply());
@@ -29,7 +29,7 @@ describe("Staker", function () {
             await this.pToken.connect(accounts.holder).approve(this.utacoChef.address, ethers.utils.parseEther("10"));
 
             await advanceBlockTo(startBlock + 10);
-
+            console.log("dsadsdasdsa")
             const pending = await this.utacoChef.pendingUTaco(0, this.staker.address);
             const harvestTx = await this.staker.connect(accounts.owner).harvestFromMasterChef(0);
 

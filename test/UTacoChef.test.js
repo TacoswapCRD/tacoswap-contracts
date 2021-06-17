@@ -114,7 +114,7 @@ describe("UTacoChef contract: ", function () {
                 err = e;
             }
 
-            assert.equal(err.toString(), "Error: VM Exception while processing transaction: invalid opcode")
+            assert.equal(err.toString(), "Error: VM Exception while processing transaction: revert Pool does not exist")
         })
     })
 

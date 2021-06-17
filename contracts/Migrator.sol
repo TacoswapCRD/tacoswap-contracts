@@ -103,8 +103,8 @@ contract Migrator is Ownable {
             }
             if (amount == 0) continue;
             newChef.setUser(i, msg.sender, amount, 0);
-            isMigrated[msg.sender] = true;
         }
+        isMigrated[msg.sender] = true;
     }
 
     /**

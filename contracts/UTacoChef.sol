@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./UTacoToken.sol";
 import "./interfaces/ILiquidityProvider.sol";
 import "hardhat/console.sol";
@@ -33,7 +34,7 @@ interface IMigrator {
  *   # Withdraw
  *   # SpeedStake
  */
-contract UTacoChef is Ownable {
+contract UTacoChef is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
     /**
@@ -83,6 +84,7 @@ contract UTacoChef is Ownable {
     PoolInfo[] public poolInfo;
     /// Info of each user that stakes LP tokens.
     mapping(uint256 => mapping(address => UserInfo)) public userInfo;
+    mapping(address => bool) public isPoolExist;
     /// Total allocation poitns. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint;
     /// The block number when UTACO mining starts.
@@ -91,11 +93,19 @@ contract UTacoChef is Ownable {
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Harvest(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
+    event Provider(address oldProvider, address newProvider);
+    event Api(uint256 id);
+    event Migrator(address migratorAddress);
     event EmergencyWithdraw(
         address indexed user,
         uint256 indexed pid,
         uint256 amount
     );
+
+    modifier validatePoolByPid(uint256 _pid) {
+        require(_pid < poolInfo.length, "Pool does not exist");
+        _;
+    }
 
     constructor(
         UTacoToken _utaco,
@@ -125,6 +135,7 @@ contract UTacoChef is Ownable {
      */
     function setProvider(address payable _provider) external onlyOwner {
         require(_provider != address(0x0), "UTacoChef::set zero address");
+        emit Provider(address(provider), _provider);
         provider = ILiquidityProvider(_provider);
     }
 
@@ -134,6 +145,7 @@ contract UTacoChef is Ownable {
      */
     function setApi(uint256 _id) external onlyOwner {
         _apiID = _id;
+        emit Api(_id);
     }
 
     /**
@@ -147,6 +159,10 @@ contract UTacoChef is Ownable {
         IERC20 _lpToken,
         bool _withUpdate
     ) public onlyOwner {
+        require(
+            !isPoolExist[address(_lpToken)],
+            "UTacoChef:: LP token already added"
+        );
         if (_withUpdate) {
             massUpdatePools();
         }
@@ -161,6 +177,7 @@ contract UTacoChef is Ownable {
                 accUTacoPerShare: 0
             })
         );
+        isPoolExist[address(_lpToken)] = true;
     }
 
     /**
@@ -170,7 +187,7 @@ contract UTacoChef is Ownable {
         uint256 _pid,
         uint256 _allocPoint,
         bool _withUpdate
-    ) public onlyOwner {
+    ) public onlyOwner validatePoolByPid(_pid) {
         if (_withUpdate) {
             massUpdatePools();
         }
@@ -186,6 +203,7 @@ contract UTacoChef is Ownable {
      */
     function setMigrator(IMigrator _migrator) public onlyOwner {
         migrator = _migrator;
+        emit Migrator(address(_migrator));
     }
 
     /**
@@ -230,6 +248,10 @@ contract UTacoChef is Ownable {
         view
         returns (uint256)
     {
+        require(
+            _from <= _to,
+            "UTacoChef:: from should be less or equal than to"
+        );
         if (_to > endBlock) {
             _to = endBlock;
         }
@@ -249,6 +271,7 @@ contract UTacoChef is Ownable {
     function pendingUTaco(uint256 _pid, address _user)
         external
         view
+        validatePoolByPid(_pid)
         returns (uint256)
     {
         PoolInfo storage pool = poolInfo[_pid];
@@ -281,7 +304,7 @@ contract UTacoChef is Ownable {
      * @notice Update reward variables of the given pool to be up-to-date
      * @param _pid: pool ID for which the reward variables should be updated
      */
-    function updatePool(uint256 _pid) public {
+    function updatePool(uint256 _pid) public validatePoolByPid(_pid) {
         PoolInfo storage pool = poolInfo[_pid];
         if (block.number <= pool.lastRewardBlock) {
             return;
@@ -295,6 +318,7 @@ contract UTacoChef is Ownable {
         uint256 utacoReward =
             multiplier.mul(pool.allocPoint).div(totalAllocPoint);
         safeUTacoTransfer(devaddr, utacoReward.div(10));
+        // utacoReward = utacoReward.mul(9).div(10);
         // safeUTacoTransfer(address(this), utacoReward); instant send 33% : 66%
         pool.accUTacoPerShare = pool.accUTacoPerShare.add(
             utacoReward.mul(1e12).div(lpSupply)
@@ -307,7 +331,10 @@ contract UTacoChef is Ownable {
      * @param _pid: pool ID on which LP tokens should be deposited
      * @param _amount: the amount of LP tokens that should be deposited
      */
-    function deposit(uint256 _pid, uint256 _amount) public {
+    function deposit(uint256 _pid, uint256 _amount)
+        public
+        validatePoolByPid(_pid)
+    {
         updatePool(_pid);
         poolInfo[_pid].lpToken.safeTransferFrom(
             address(msg.sender),
@@ -323,7 +350,7 @@ contract UTacoChef is Ownable {
      */
     function _deposit(uint256 _pid, uint256 _amount) private {
         UserInfo storage user = userInfo[_pid][msg.sender];
-
+        harvest ( _pid ) ;
         user.amount = user.amount.add(_amount);
         user.rewardDebt = user.amount.mul(poolInfo[_pid].accUTacoPerShare).div(
             1e12
@@ -335,7 +362,7 @@ contract UTacoChef is Ownable {
      * @notice Function which send accumulated UTaco tokens to messege sender
      * @param _pid: pool ID from which the accumulated UTaco tokens should be received
      */
-    function harvest(uint256 _pid) public {
+    function harvest(uint256 _pid) public validatePoolByPid(_pid) {
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
         uint256 accUTacoPerShare = poolInfo[_pid].accUTacoPerShare;
@@ -364,7 +391,10 @@ contract UTacoChef is Ownable {
      * @param _pid: pool ID from which the LP tokens should be withdrawn
      * @param _amount: the amount of LP tokens that should be withdrawn
      */
-    function withdraw(uint256 _pid, uint256 _amount) public {
+    function withdraw(uint256 _pid, uint256 _amount)
+        public
+        validatePoolByPid(_pid)
+    {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         require(user.amount >= _amount, "withdraw: not good");
@@ -383,7 +413,7 @@ contract UTacoChef is Ownable {
     /**
      * @notice Function which withdraw all LP tokens to messege sender without caring about rewards
      */
-    function emergencyWithdraw(uint256 _pid) public {
+    function emergencyWithdraw(uint256 _pid) public validatePoolByPid(_pid) nonReentrant {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         pool.lpToken.safeTransfer(address(msg.sender), user.amount);
@@ -411,7 +441,8 @@ contract UTacoChef is Ownable {
      * @param _devaddr: new dev address
      */
     function dev(address _devaddr) public {
-        require(msg.sender == devaddr, "dev: wut?");
+        require(msg.sender == devaddr, "UTacoCHef: dev wut?");
+        require(_devaddr == address(0), "UTacoCHef: dev address can't be zero");
         devaddr = _devaddr;
     }
 
@@ -434,7 +465,7 @@ contract UTacoChef is Ownable {
         uint256 _minAmountOutA,
         uint256 _minAmountOutB,
         uint256 _deadline
-    ) public payable {
+    ) public payable validatePoolByPid(_pid) {
         (address routerAddr, , ) = provider.apis(_apiID);
         IUniswapV2Router02 router = IUniswapV2Router02(routerAddr);
         delete routerAddr;
