@@ -28,12 +28,12 @@ module.exports = async function ({ ethers: { getNamedSigner }, getNamedAccounts,
     deterministicDeployment: false
   })
 
-  const maker = await ethers.getContract("eTacoMaker")
-  if (await maker.owner() !== owner) {
-    console.log("Setting maker owner")
-    await (await maker.transferOwnership(owner, true, false)).wait()
-  }
+  // const maker = await ethers.getContract("eTacoMaker")
+  // if (await maker.owner() !== owner) {
+  //   console.log("Setting maker owner")
+  //   await (await maker.transferOwnership(owner, true, false)).wait()
+  // }
 }
 
 module.exports.tags = ["eTacoMaker"]
-module.exports.dependencies = ["eTacoBar"]
+module.exports.dependencies = ["eTacoBar", "TacoswapV2Factory"]

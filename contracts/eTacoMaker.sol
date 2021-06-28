@@ -155,7 +155,7 @@ contract eTacoMaker is Ownable {
                 IERC20(etaco).safeTransfer(bar, amount);
                 etacoOut = amount;
             } else if (token0 == weth) {
-                etacoOut = _toeTaco(weth, amount);
+                etacoOut = _toETaco(weth, amount);
             } else {
                 address bridge = bridgeFor(token0);
                 amount = _swap(token0, bridge, amount, address(this));
@@ -164,20 +164,20 @@ contract eTacoMaker is Ownable {
         } else if (token0 == etaco) {
             // eg. eTaco - ETH
             IERC20(etaco).safeTransfer(bar, amount0);
-            etacoOut = _toeTaco(token1, amount1).add(amount0);
+            etacoOut = _toETaco(token1, amount1).add(amount0);
         } else if (token1 == etaco) {
             // eg. USDT - eTaco
             IERC20(etaco).safeTransfer(bar, amount1);
-            etacoOut = _toeTaco(token0, amount0).add(amount1);
+            etacoOut = _toETaco(token0, amount0).add(amount1);
         } else if (token0 == weth) {
             // eg. ETH - USDC
-            etacoOut = _toeTaco(
+            etacoOut = _toETaco(
                 weth,
                 _swap(token1, weth, amount1, address(this)).add(amount0)
             );
         } else if (token1 == weth) {
             // eg. USDT - ETH
-            etacoOut = _toeTaco(
+            etacoOut = _toETaco(
                 weth,
                 _swap(token0, weth, amount0, address(this)).add(amount1)
             );
@@ -250,7 +250,7 @@ contract eTacoMaker is Ownable {
 
     // F1 - F10: OK
     // C1 - C24: OK
-    function _toeTaco(address token, uint256 amountIn)
+    function _toETaco(address token, uint256 amountIn)
         internal
         returns (uint256 amountOut)
     {

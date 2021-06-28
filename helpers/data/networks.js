@@ -13,7 +13,7 @@ const networks = {
     mainnet: {
         url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
         accounts: [DEPLOYMENT_ACCOUNT_KEY],
-        gasPrice: 15 * 1000000000,
+        gasPrice: 20 * 1000000000,
         chainId: 1,
     },
     localhost: {
