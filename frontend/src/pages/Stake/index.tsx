@@ -20,7 +20,7 @@ const Stake = () => {
   return (
     <StyledFlex justifyContent="center" maxWidth="100%">
       <AppBody marginTop="88px" padding="0 19px 30px">
-        <FindPoolTabs title="UTACO - xUTACO" padding="44px 0 26px" />
+        <FindPoolTabs title="eTaco - xeTaco" padding="44px 0 26px" />
         <StyledDiv>
           <DepositPanel />
           <WithdrawPanel />

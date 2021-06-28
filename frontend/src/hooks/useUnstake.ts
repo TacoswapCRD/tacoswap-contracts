@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
 
-import useUTaco from './useUTaco'
+import useeTaco from './useeTaco'
 
-import { unstake, getMasterChefContract } from '../utaco/utils'
+import { unstake, getMasterChefContract } from '../etaco/utils'
 import { useWeb3React } from '@web3-react/core'
 
 const useUnstake = (pid: number) => {
   const { account } = useWeb3React()
-  const sushi = useUTaco()
+  const sushi = useeTaco()
   const masterChefContract = getMasterChefContract(sushi)
 
   const handleUnstake = useCallback(

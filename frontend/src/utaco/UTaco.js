@@ -5,7 +5,7 @@ import { Account } from './lib/accounts'
 import { EVM } from './lib/evm'
 import { ethers } from 'ethers'
 
-export class UTaco {
+export class eTaco {
   constructor(provider, networkId, testing, options) {
     let realProvider
 

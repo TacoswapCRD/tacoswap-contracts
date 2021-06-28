@@ -1,4 +1,4 @@
-import { BigNumber } from '../utaco'
+import { BigNumber } from '../etaco'
 import useFarms from './useFarms'
 
 const usePrice = (lpTokenName: { [0]: string; [1]: string }, farmId?: string) => {

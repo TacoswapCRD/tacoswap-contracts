@@ -8,7 +8,7 @@ import { BalanceProps } from './useToken'
 
 const { BigNumber } = ethers
 
-const useUTacoBar = () => {
+const useeTacoBar = () => {
   const { account } = useActiveWeb3React()
   const addTransaction = useTransactionAdder()
   const sushiContract = useSushiContract(true) // withSigner
@@ -79,4 +79,4 @@ const useUTacoBar = () => {
   return { allowance, approve, enter, leave }
 }
 
-export default useUTacoBar
+export default useeTacoBar

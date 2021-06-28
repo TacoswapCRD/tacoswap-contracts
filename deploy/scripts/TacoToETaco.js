@@ -5,15 +5,15 @@ module.exports = async function ({ ethers, getNamedAccounts, deployments }) {
     const { deployer } = await getNamedAccounts()
   
     const taco = await ethers.getContract("ERC20Mock")
-    const utaco = await  ethers.getContract("UTacoToken");
+    const etaco = await  ethers.getContract("eTacoToken");
   
-    await deploy("TacoToUTaco", {
+    await deploy("TacoToETaco", {
       from: deployer,
-      args: [taco.address, utaco.address],
+      args: [taco.address, etaco.address],
       log: true,
     })
   }
   
-  module.exports.tags = ["TacoToUTaco"]
-  module.exports.dependencies = ["test", "UTacoToken"]
+  module.exports.tags = ["TacoToETaco"]
+  module.exports.dependencies = ["eTacoToken"]
   

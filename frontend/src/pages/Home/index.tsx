@@ -6,8 +6,8 @@ import Button from '../../components/Button/Button'
 import BigNumber from 'bignumber.js'
 import Value from '../../components/Value'
 import useTokenBalance from '../../hooks/useTokenBalance'
-import useUTaco from '../../hooks/useUTaco'
-import { getSushiAddress, getSushiSupply } from '../../utaco/utils'
+import useeTaco from '../../hooks/useeTaco'
+import { getSushiAddress, getSushiSupply } from '../../etaco/utils'
 import { getBalanceNumber } from '../../utils/formatBalance'
 import FarmCards from '../Farms/FarmCards'
 import usePrice from '../../hooks/usePrice'
@@ -17,24 +17,24 @@ import { useWeb3React } from '@web3-react/core'
 import PageHeader from '../../components/PageHader'
 import useTheme from '../../hooks/useTheme'
 import { StyledFlex } from '../../components/swap/styleds'
-import { UTacoTokenContext, SignerContext, CurrentAddressContext  } from '../../hardhat/SymfoniContext'
+import { eTacoTokenContext, SignerContext, CurrentAddressContext  } from '../../hardhat/SymfoniContext'
 
 const Balances = () => {
   const theme = useTheme()
   const [totalSupply, setTotalSupply] = useState(new BigNumber(0))
-  const [utacoBalance, setUTacoBalance] = useState(new BigNumber(0))
+  const [etacoBalance, seteTacoBalance] = useState(new BigNumber(0))
   const [totalLocked, setTotalLocked] = useState(new BigNumber(0))
   const { stakedValue } = useFarms()
-  const utaco = useUTaco()
+  const etaco = useeTaco()
   const { account } = useWeb3React()
-  const sushiBalance = useTokenBalance(getSushiAddress(utaco))
+  const sushiBalance = useTokenBalance(getSushiAddress(etaco))
   const { etherPrice, price, liquidityWETH, liquidityCOMB }: any = usePrice({
     0: 'TACO-ETH UNI V2 LP',
     1: 'USDT-ETH SLP'
   })
   const [signer, setSigner] = useContext(SignerContext)
   const [currentAddress, setCurrentAddress] = useContext(CurrentAddressContext)
-  const UTacoToken = useContext(UTacoTokenContext)
+  const eTacoToken = useContext(eTacoTokenContext)
   useEffect(() => {
     if (stakedValue.length) {
       const totalLocked = stakedValue.reduce((t: any, n: any) => t.plus(n.totalWethValue), new BigNumber(0))
@@ -45,10 +45,10 @@ const Balances = () => {
   useEffect(() => {
     async function fetchTotalSupply() {
       const burned = new BigNumber(250)
-      if (!UTacoToken.instance) {
+      if (!eTacoToken.instance) {
         return new BigNumber(0);
       }
-      const supply = new BigNumber((await UTacoToken.instance.totalSupply()).toString()).minus(
+      const supply = new BigNumber((await eTacoToken.instance.totalSupply()).toString()).minus(
         burned.multipliedBy(new BigNumber(10).pow(18))
       )
       console.log('🚀 ~ file: index.tsx ~ line 44 ~ fetchTotalSupply ~ supply', supply)
@@ -62,18 +62,18 @@ const Balances = () => {
   }, [])
 
   useEffect(() => {
-    async function fetchUTacoBalance() {
+    async function fetcheTacoBalance() {
       const burned = new BigNumber(250)
-      if (!UTacoToken.instance) {
+      if (!eTacoToken.instance) {
         return new BigNumber(0);
       }
-      const utacoBalance = new BigNumber((await UTacoToken.instance.balanceOf(currentAddress)).toString())
-      console.log('🚀 ~ file: index.tsx ~ line 44 ~ fetchTotalSupply ~ supply', utacoBalance)
-      return utacoBalance
+      const etacoBalance = new BigNumber((await eTacoToken.instance.balanceOf(currentAddress)).toString())
+      console.log('🚀 ~ file: index.tsx ~ line 44 ~ fetchTotalSupply ~ supply', etacoBalance)
+      return etacoBalance
     }
 
-    fetchUTacoBalance().then(res => {
-      setUTacoBalance(() => res)
+    fetcheTacoBalance().then(res => {
+      seteTacoBalance(() => res)
       console.log("🚀 ~ file: index.tsx ~ line 52 ~ fetchTotalSupply ~ res", res)
     })
   }, [])
@@ -107,9 +107,9 @@ const Balances = () => {
                   <StyledBalance>
                     <StyledBalanceContent>
                       <div style={{ width: '100%', justifyContent: 'space-between' }}>
-                        <Label text="Your UTACO Balance" />
+                        <Label text="Your eTaco Balance" />
                         <StyledFlex justifyContent="space-between" mb="0">
-                          <Value size="lg" value={!!currentAddress ? tacoBalance(getBalanceNumber(utacoBalance)) : 'Locked'} />
+                          <Value size="lg" value={!!currentAddress ? tacoBalance(getBalanceNumber(etacoBalance)) : 'Locked'} />
                           <StyledConvertions>
                             <StyledParagraph mt="-10px">
                               <Value
@@ -165,7 +165,7 @@ const Balances = () => {
                   <StyledBalance>
                     <StyledBalanceContent>
                       <div style={{ width: '100%', justifyContent: 'flex-start' }}>
-                        <Label text="UTACO Price" />
+                        <Label text="eTaco Price" />
                         <Value
                           size="lg"
                           value={price.toNumber() ? price.toNumber() : 'Locked'}
@@ -240,7 +240,7 @@ const Balances = () => {
               <StyledBalanceContent>
                 <div>
                   <Label text="Total Circulating Supply" />
-                  <Value size="lg" symbol="UTACO" value={tacoBalance(getBalanceNumber(totalSupply))} decimals={3} />
+                  <Value size="lg" symbol="eTaco" value={tacoBalance(getBalanceNumber(totalSupply))} decimals={3} />
                 </div>
                 <StyledConvertions>
                   <StyledParagraph>
@@ -266,7 +266,7 @@ const Balances = () => {
                 </StyledConvertions>
               </StyledBalanceContent>
 
-              <FootnoteRight>Current emission rate 10 UTACO per block</FootnoteRight>
+              <FootnoteRight>Current emission rate 10 eTaco per block</FootnoteRight>
             </StyledCardContentInherit>
             <Spacer />
             <StyledCardContentInherit>

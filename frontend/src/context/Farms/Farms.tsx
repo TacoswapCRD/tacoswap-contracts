@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react'
 
-import useUTaco from '../../hooks/useUTaco'
+import useeTaco from '../../hooks/useeTaco'
 
-import { getFarms } from '../../utaco/utils'
-import { supportedPools } from '../../utaco/lib/constants'
+import { getFarms } from '../../etaco/utils'
+import { supportedPools } from '../../etaco/lib/constants'
 
 import Context from './context'
 import useAllStakedValue from '../../hooks/useAllStakedValue'
-import { UTacoChefContext } from "../../hardhat/SymfoniContext"
+import { eTacoChefContext } from "../../hardhat/SymfoniContext"
 
 interface TFarmsProvider {
   children: React.ReactNode
@@ -15,11 +15,11 @@ interface TFarmsProvider {
 
 const FarmsProvider: React.FC<TFarmsProvider> = ({ children }: TFarmsProvider) => {
   console.log("🚀 ~ file: Farms.tsx ~ line 7 ~ supportedPools", supportedPools)
-  const utacoChef = useContext(UTacoChefContext)
+  const etacoChef = useContext(eTacoChefContext)
   const [unharvested] = useState(0)
-  const utaco: any = utacoChef.instance
-  // console.log("🚀 ~ file: Farms.tsx ~ line 17 ~ utaco", utaco )
-  // const farms: any[] = getFarms(utaco)
+  const etaco: any = etacoChef.instance
+  // console.log("🚀 ~ file: Farms.tsx ~ line 17 ~ etaco", etaco )
+  // const farms: any[] = getFarms(etaco)
   const farms: any[] = supportedPools
   console.log("🚀 ~ file: Farms.tsx ~ line 18 ~ farms", farms)
   const orders = farms.map(({ pid }): number[] => pid)

@@ -2,14 +2,14 @@ import React, { useCallback, useState } from 'react'
 import { StyledFlex } from '../../components/swap/styleds'
 import { Input } from '../../components/NumericalInput'
 import { Container, StyledButtonPrimary } from './styled'
-import useUTacoBar from '../../hooks/useUTacoBar'
+import useeTacoBar from '../../hooks/useeTacoBar'
 import useToken from '../../hooks/useToken'
 import { formatFromBalance, formatToBalance } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
 import { MaxButton } from '../Pool/styleds'
 
 const DepositPanel = () => {
-  const { allowance, approve, enter } = useUTacoBar()
+  const { allowance, approve, enter } = useeTacoBar()
   const { account } = useActiveWeb3React()
   const sushiBalanceBigInt = useToken('0x6b3595068778dd592e39a122f4f5a5cf09c90fe2')
   const sushiBalance = formatFromBalance(sushiBalanceBigInt?.value, sushiBalanceBigInt?.decimals)

@@ -2,14 +2,14 @@ import { useCallback, useEffect, useState } from 'react'
 
 import BigNumber from 'bignumber.js'
 
-import { getStaked, getMasterChefContract } from '../utaco/utils'
-import useUTaco from './useUTaco'
+import { getStaked, getMasterChefContract } from '../etaco/utils'
+import useeTaco from './useeTaco'
 import { useWeb3React } from '@web3-react/core'
 
 const useStakedBalance = (pid: number) => {
   const [balance, setBalance] = useState(new BigNumber(0))
   const { account } = useWeb3React()
-  const sushi = useUTaco()
+  const sushi = useeTaco()
   const masterChefContract = getMasterChefContract(sushi)
   console.log("🚀 ~ file: useStakedBalance.ts ~ line 14 ~ useStakedBalance ~ masterChefContract", masterChefContract)
 

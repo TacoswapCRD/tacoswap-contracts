@@ -1,24 +1,20 @@
 // SPDX-License-Identifier: MIT
 
-/**
- *Submitted for verification at Etherscan.io on 2020-03-04
-*/
-
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
-contract UTacoToken {
+contract eTacoToken {
     /// @notice EIP-20 token name for this token
-    string public constant name = "UTACO Token";
+    string public constant name = "eTACO Token";
 
     /// @notice EIP-20 token symbol for this token
-    string public constant symbol = "UTACO";
+    string public constant symbol = "eTACO";
 
     /// @notice EIP-20 token decimals for this token
     uint8 public constant decimals = 18;
 
     /// @notice Total number of tokens in circulation
-    uint public constant totalSupply = 80000000e18; // 80 million UTaco
+    uint public constant totalSupply = 395097860e18; // 395,097,860 million eTaco
 
     /// @notice Allowance amounts on behalf of others
     mapping (address => mapping (address => uint96)) internal allowances;
@@ -63,12 +59,11 @@ contract UTacoToken {
     event Approval(address indexed owner, address indexed spender, uint256 amount);
 
     /**
-     * @notice Construct a new UTaco token
-     * @param account The initial account to grant all the tokens
+     * @notice Construct a new eTaco token
      */
-    constructor(address account) public {
-        balances[account] = uint96(totalSupply);
-        emit Transfer(address(0), account, totalSupply);
+    constructor() public {
+        balances[msg.sender] = uint96(totalSupply);
+        emit Transfer(address(0), msg.sender, totalSupply);
     }
 
     /**
@@ -94,7 +89,7 @@ contract UTacoToken {
         if (rawAmount == uint(-1)) {
             amount = uint96(-1);
         } else {
-            amount = safe96(rawAmount, "UTacoToken::approve: amount exceeds 96 bits");
+            amount = safe96(rawAmount, "eTacoToken::approve: amount exceeds 96 bits");
         }
 
         allowances[msg.sender][spender] = amount;
@@ -119,7 +114,7 @@ contract UTacoToken {
      * @return Whether or not the transfer succeeded
      */
     function transfer(address dst, uint rawAmount) external returns (bool) {
-        uint96 amount = safe96(rawAmount, "UTacoToken::transfer: amount exceeds 96 bits");
+        uint96 amount = safe96(rawAmount, "eTacoToken::transfer: amount exceeds 96 bits");
         _transferTokens(msg.sender, dst, amount);
         return true;
     }
@@ -134,10 +129,10 @@ contract UTacoToken {
     function transferFrom(address src, address dst, uint rawAmount) external returns (bool) {
         address spender = msg.sender;
         uint96 spenderAllowance = allowances[src][spender];
-        uint96 amount = safe96(rawAmount, "UTacoToken::approve: amount exceeds 96 bits");
+        uint96 amount = safe96(rawAmount, "eTacoToken::approve: amount exceeds 96 bits");
 
         if (spender != src && spenderAllowance != uint96(-1)) {
-            uint96 newAllowance = sub96(spenderAllowance, amount, "UTacoToken::transferFrom: transfer amount exceeds spender allowance");
+            uint96 newAllowance = sub96(spenderAllowance, amount, "eTacoToken::transferFrom: transfer amount exceeds spender allowance");
             allowances[src][spender] = newAllowance;
 
             emit Approval(src, spender, newAllowance);
@@ -169,9 +164,9 @@ contract UTacoToken {
         bytes32 structHash = keccak256(abi.encode(DELEGATION_TYPEHASH, delegatee, nonce, expiry));
         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
         address signatory = ecrecover(digest, v, r, s);
-        require(signatory != address(0), "UTacoToken::delegateBySig: invalid signature");
-        require(nonce == nonces[signatory]++, "UTacoToken::delegateBySig: invalid nonce");
-        require(now <= expiry, "UTacoToken::delegateBySig: signature expired");
+        require(signatory != address(0), "eTacoToken::delegateBySig: invalid signature");
+        require(nonce == nonces[signatory]++, "eTacoToken::delegateBySig: invalid nonce");
+        require(now <= expiry, "eTacoToken::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
@@ -193,7 +188,7 @@ contract UTacoToken {
      * @return The number of votes the account had as of the given block
      */
     function getPriorVotes(address account, uint blockNumber) public view returns (uint96) {
-        require(blockNumber < block.number, "UTacoToken::getPriorVotes: not yet determined");
+        require(blockNumber < block.number, "eTacoToken::getPriorVotes: not yet determined");
 
         uint32 nCheckpoints = numCheckpoints[account];
         if (nCheckpoints == 0) {
@@ -237,11 +232,11 @@ contract UTacoToken {
     }
 
     function _transferTokens(address src, address dst, uint96 amount) internal {
-        require(src != address(0), "UTacoToken::_transferTokens: cannot transfer from the zero address");
-        require(dst != address(0), "UTacoToken::_transferTokens: cannot transfer to the zero address");
+        require(src != address(0), "eTacoToken::_transferTokens: cannot transfer from the zero address");
+        require(dst != address(0), "eTacoToken::_transferTokens: cannot transfer to the zero address");
 
-        balances[src] = sub96(balances[src], amount, "UTacoToken::_transferTokens: transfer amount exceeds balance");
-        balances[dst] = add96(balances[dst], amount, "UTacoToken::_transferTokens: transfer amount overflows");
+        balances[src] = sub96(balances[src], amount, "eTacoToken::_transferTokens: transfer amount exceeds balance");
+        balances[dst] = add96(balances[dst], amount, "eTacoToken::_transferTokens: transfer amount overflows");
         emit Transfer(src, dst, amount);
 
         _moveDelegates(delegates[src], delegates[dst], amount);
@@ -252,21 +247,21 @@ contract UTacoToken {
             if (srcRep != address(0)) {
                 uint32 srcRepNum = numCheckpoints[srcRep];
                 uint96 srcRepOld = srcRepNum > 0 ? checkpoints[srcRep][srcRepNum - 1].votes : 0;
-                uint96 srcRepNew = sub96(srcRepOld, amount, "UTacoToken::_moveVotes: vote amount underflows");
+                uint96 srcRepNew = sub96(srcRepOld, amount, "eTacoToken::_moveVotes: vote amount underflows");
                 _writeCheckpoint(srcRep, srcRepNum, srcRepOld, srcRepNew);
             }
 
             if (dstRep != address(0)) {
                 uint32 dstRepNum = numCheckpoints[dstRep];
                 uint96 dstRepOld = dstRepNum > 0 ? checkpoints[dstRep][dstRepNum - 1].votes : 0;
-                uint96 dstRepNew = add96(dstRepOld, amount, "UTacoToken::_moveVotes: vote amount overflows");
+                uint96 dstRepNew = add96(dstRepOld, amount, "eTacoToken::_moveVotes: vote amount overflows");
                 _writeCheckpoint(dstRep, dstRepNum, dstRepOld, dstRepNew);
             }
         }
     }
 
     function _writeCheckpoint(address delegatee, uint32 nCheckpoints, uint96 oldVotes, uint96 newVotes) internal {
-      uint32 blockNumber = safe32(block.number, "UTacoToken::_writeCheckpoint: block number exceeds 32 bits");
+      uint32 blockNumber = safe32(block.number, "eTacoToken::_writeCheckpoint: block number exceeds 32 bits");
 
       if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
           checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;

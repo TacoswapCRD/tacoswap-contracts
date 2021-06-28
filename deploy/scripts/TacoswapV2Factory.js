@@ -11,4 +11,4 @@ module.exports = async function ({ ethers, getNamedAccounts, deployments, getCha
   })
 }
 
-module.exports.tags = ["TacoswapV2Factory"]
+module.exports.tags = ["TacoswapV2Factory", "DEX"]

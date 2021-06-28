@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import BigNumber from 'bignumber.js'
-import { getEarned, getMasterChefContract } from '../utaco/utils'
-import useUTaco from './useUTaco'
+import { getEarned, getMasterChefContract } from '../etaco/utils'
+import useeTaco from './useeTaco'
 import useBlock from './useBlock'
 import { useWeb3React } from '@web3-react/core'
 
 const useEarnings = (pid: any) => {
   const [balance, setBalance] = useState(new BigNumber(0))
   const { account } = useWeb3React()
-  const sushi = useUTaco()
+  const sushi = useeTaco()
   const masterChefContract = getMasterChefContract(sushi)
   const block = useBlock()
 

@@ -7,14 +7,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./tacoswapv2/interfaces/ITacoswapV2Pair.sol";
 import "./tacoswapv2/interfaces/ITacoswapV2Factory.sol";
 import "./interfaces/IMasterChef.sol";
-import "./interfaces/IUTacoChef.sol";
+import "./interfaces/IETacoChef.sol";
 import "./DummyToken.sol";
 import "hardhat/console.sol";
 
 /**
  *@title Migrator contract
  * - Users can:
- *   #Migrate` migrates LP tokens from TacoChef to UTacoChef
+ *   #Migrate` migrates LP tokens from TacoChef to eTacoChef
  *   #migrateUserInfo
  * - only owner can
  *   #MigratePools
@@ -22,7 +22,7 @@ import "hardhat/console.sol";
 
 contract Migrator is Ownable {
     IMasterChef public oldChef;
-    IUTacoChef public newChef;
+    IETacoChef public newChef;
     ITacoswapV2Factory public newFactory;
     address public uniFactory;
     address public sushiFactory;
@@ -37,7 +37,7 @@ contract Migrator is Ownable {
      *  @param _sushiFactory The address of SushiSwapFactory.
      *  @param _newFactory The address of TacoSwapV2Factory.
      *  @param _notBeforeBlock The block number before which can`t be migrated.
-     *  @param _newChef The address of UTacoChef.
+     *  @param _newChef The address of eTacoChef.
      **/
     constructor(
         address _oldChef,
@@ -53,7 +53,7 @@ contract Migrator is Ownable {
         require(address(_newFactory) != address(0x0), "Migrator::set zero address");
         require(_newChef != address(0x0), "Migrator::set zero address");
         oldChef = IMasterChef(_oldChef);
-        newChef = IUTacoChef(_newChef);
+        newChef = IETacoChef(_newChef);
         uniFactory = _uniFactory;
         sushiFactory = _sushiFactory;
         newFactory = _newFactory;
@@ -62,7 +62,7 @@ contract Migrator is Ownable {
 
     /**
      * @dev Migrates pools which pids are given in array(pools).
-     *      Can be called one time, when UTacoChef poolInfo is empty.
+     *      Can be called one time, when eTacoChef poolInfo is empty.
      * @param pools Array which contains pids that must be migrated.
      **/
     function migratePools(uint256[] memory pools) external onlyOwner {
@@ -85,7 +85,7 @@ contract Migrator is Ownable {
     }
 
     /**
-     *  @dev Migrates UserInfo from TacoChef to UTacoChef
+     *  @dev Migrates UserInfo from TacoChef to eTacoChef
      *   Can be called by user one time and required to call deposit function
      *   with amount = 0, for all pools where the user have some amount before migration.
      **/
@@ -95,12 +95,6 @@ contract Migrator is Ownable {
         for (uint256 i = 0; i < oldPoolLength; i++) {
             (, , uint256 lastRewardBlock, ) = oldChef.poolInfo(i);
             (uint256 amount, ) = oldChef.userInfo(i, msg.sender);
-            if (amount > 0) {
-                require(
-                    !(lastRewardBlock <= block.number - 20),
-                    "Migrator: Please call deposit function with amount = 0, for all pools where you have some amount"
-                );
-            }
             if (amount == 0) continue;
             newChef.setUser(i, msg.sender, amount, 0);
         }
@@ -108,7 +102,7 @@ contract Migrator is Ownable {
     }
 
     /**
-     *  @dev Migrates LP tokens from TacoChef to UTacoChef.
+     *  @dev Migrates LP tokens from TacoChef to eTacoChef.
      *   Deploy DummyToken. Mint DummyToken with the same amount of LP tokens.
      *   DummyToken is neaded to pass require in TacoChef contracts migrate function.
      **/
