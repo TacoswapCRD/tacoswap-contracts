@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.12;
+pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./tacoswapv2/interfaces/ITacoswapV2Pair.sol";
 import "./tacoswapv2/interfaces/ITacoswapV2Router01.sol";
 import "./tacoswapv2/interfaces/ITacoswapV2Factory.sol";

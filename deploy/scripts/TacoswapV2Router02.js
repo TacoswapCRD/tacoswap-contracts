@@ -1,10 +1,11 @@
 const { WETH } = require("@sushiswap/sdk")
-const { bytecode } = require('./../../artifacts/cache/solpp-generated-contracts/tacoswapv2/TacoswapV2Pair.sol/TacoswapV2Pair.json')
-const { keccak256 } = require('@ethersproject/solidity')
+// const { bytecode } = require('./../../artifacts/cache/solpp-generated-contracts/tacoswapv2/TacoswapV2Pair.sol/TacoswapV2Pair.json')
+// const { keccak256 } = require('@ethersproject/solidity')
 const { ethers, getChainId } = require("hardhat");
 const { utils } = ethers;
 
-const COMPUTED_INIT_CODE_HASH = keccak256(['bytes'], [bytecode])
+// const COMPUTED_INIT_CODE_HASH = keccak256(['bytes'], [bytecode])
+// console.log("🚀 ~ file: TacoswapV2Router02.js ~ line 8 ~ COMPUTED_INIT_CODE_HASH", COMPUTED_INIT_CODE_HASH)
 
 module.exports = async function ({ getNamedAccounts, deployments }) {
   const { deploy, execute, get } = deployments;

@@ -16,7 +16,7 @@ describe("TacoToETaco", function () {
     beforeEach(async function () {
         this.taco = await this.tacoToken.deploy()
         await this.taco.deployed()
-        this.etaco = await this.etacoToken.deploy(accounts.holder.address)
+        this.etaco = await this.etacoToken.deploy()
         await this.etaco.deployed()
         this.TacoToETaco = await this.TacoToETaco.deploy(this.taco.address, this.etaco.address)
         await this.TacoToETaco.deployed()

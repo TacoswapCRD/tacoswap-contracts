@@ -1,0 +1,362 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x1BC1cDDdD95Dd7724a22152E9F979045e34e1a7C",
+    "txHash": "0x2335e3f19c6ed2ecb8f743f274f72096ca8bf5693eaf99636bf27e2149620a3e",
+    "deployTransaction": {
+      "hash": "0x2335e3f19c6ed2ecb8f743f274f72096ca8bf5693eaf99636bf27e2149620a3e",
+      "type": 0,
+      "accessList": null,
+      "blockHash": null,
+      "blockNumber": null,
+      "transactionIndex": null,
+      "confirmations": 0,
+      "from": "0x5f2cFa351B7d4b973d341fdB2cB154794c0a899c",
+      "gasPrice": {
+        "type": "BigNumber",
+        "hex": "0x012a05f200"
+      },
+      "gasLimit": {
+        "type": "BigNumber",
+        "hex": "0x0762b4"
+      },
+      "to": null,
+      "value": {
+        "type": "BigNumber",
+        "hex": "0x00"
+      },
+      "nonce": 152,
+      "data": "0x608060405234801561001057600080fd5b50600080546001600160a01b031916339081178255604051909182917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908290a350610759806100616000396000f3fe60806040526004361061007b5760003560e01c80639623609d1161004e5780639623609d1461011157806399a88ec414610124578063f2fde38b14610144578063f3b7dead146101645761007b565b8063204e1c7a14610080578063715018a6146100bc5780637eff275e146100d35780638da5cb5b146100f3575b600080fd5b34801561008c57600080fd5b506100a061009b366004610515565b610184565b6040516001600160a01b03909116815260200160405180910390f35b3480156100c857600080fd5b506100d1610215565b005b3480156100df57600080fd5b506100d16100ee366004610554565b610292565b3480156100ff57600080fd5b506000546001600160a01b03166100a0565b6100d161011f36600461058c565b61031c565b34801561013057600080fd5b506100d161013f366004610554565b6103ad565b34801561015057600080fd5b506100d161015f366004610515565b610405565b34801561017057600080fd5b506100a061017f366004610515565b6104ef565b6000806000836001600160a01b03166040516101aa90635c60da1b60e01b815260040190565b600060405180830381855afa9150503d80600081146101e5576040519150601f19603f3d011682016040523d82523d6000602084013e6101ea565b606091505b5091509150816101f957600080fd5b8080602001905181019061020d9190610538565b949350505050565b6000546001600160a01b031633146102485760405162461bcd60e51b815260040161023f906106c0565b60405180910390fd5b600080546040516001600160a01b03909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a3600080546001600160a01b0319169055565b6000546001600160a01b031633146102bc5760405162461bcd60e51b815260040161023f906106c0565b6040516308f2839760e41b81526001600160a01b038281166004830152831690638f283970906024015b600060405180830381600087803b15801561030057600080fd5b505af1158015610314573d6000803e3d6000fd5b505050505050565b6000546001600160a01b031633146103465760405162461bcd60e51b815260040161023f906106c0565b60405163278f794360e11b81526001600160a01b03841690634f1ef286903490610376908690869060040161065d565b6000604051808303818588803b15801561038f57600080fd5b505af11580156103a3573d6000803e3d6000fd5b5050505050505050565b6000546001600160a01b031633146103d75760405162461bcd60e51b815260040161023f906106c0565b604051631b2ce7f360e11b81526001600160a01b038281166004830152831690633659cfe6906024016102e6565b6000546001600160a01b0316331461042f5760405162461bcd60e51b815260040161023f906106c0565b6001600160a01b0381166104945760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b606482015260840161023f565b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600080546001600160a01b0319166001600160a01b0392909216919091179055565b6000806000836001600160a01b03166040516101aa906303e1469160e61b815260040190565b600060208284031215610526578081fd5b81356105318161070b565b9392505050565b600060208284031215610549578081fd5b81516105318161070b565b60008060408385031215610566578081fd5b82356105718161070b565b915060208301356105818161070b565b809150509250929050565b6000806000606084860312156105a0578081fd5b83356105ab8161070b565b925060208401356105bb8161070b565b9150604084013567ffffffffffffffff808211156105d7578283fd5b818601915086601f8301126105ea578283fd5b8135818111156105fc576105fc6106f5565b604051601f8201601f19908116603f01168101908382118183101715610624576106246106f5565b8160405282815289602084870101111561063c578586fd5b82602086016020830137856020848301015280955050505050509250925092565b600060018060a01b038416825260206040818401528351806040850152825b818110156106985785810183015185820160600152820161067c565b818111156106a95783606083870101525b50601f01601f191692909201606001949350505050565b6020808252818101527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604082015260600190565b634e487b7160e01b600052604160045260246000fd5b6001600160a01b038116811461072057600080fd5b5056fea2646970667358221220d849f96f3086b9f82cdcf665adb8c697ace05638da1c7c16ab2d26293717af6764736f6c63430008020033",
+      "r": "0x1e8b6f9295c464a88ebf8498fd378b4eef0f9c9bfc30f4d23d1e7de5b49d73ec",
+      "s": "0x0eb4e9904b870a619e699a60355a4c41fd1d7b8149770941480bb7a4f328efe7",
+      "v": 44,
+      "creates": "0x1BC1cDDdD95Dd7724a22152E9F979045e34e1a7C",
+      "chainId": 4
+    }
+  },
+  "proxies": [
+    {
+      "address": "0xDbFc763dc6e52fdC30C9A128e8909b4D910Cf356",
+      "txHash": "0xb9f1e46e33f5ef6c4ab849610abe4ca09103d908346dd49a7b34b1ac25287e8b",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xBa7e7d4458be91087969ca63C90a11e440b73f3b",
+      "txHash": "0xe86fe7d9958c907c04517d72035027991d36ef21da18dd419d8cf004fc353e4e",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xbFa9cf164b3095B0276D821f9b4d4a7A09eFEF95",
+      "txHash": "0xaec68ed771885388f29676dd1032c3de2bc24069bf9d0bc3c0d4a135645423ea",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x7d8b76Ce715f714be89d7b4065C6dA762ADfaBF6",
+      "txHash": "0x0352bec91a992f530206f761be71cfbf6e4ab7eec6ffefee0706837dd1dcec74",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xe4c42e09acf73808CfD12Eae2136c20332c1D099",
+      "txHash": "0xe6d6165bb617d9d2ed118c619b0eaef5426dd5d640a6c295e270b8c9b7c30514",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x28b8566c6E5476937337901D5b980cfb208fCF9D",
+      "txHash": "0x56e03ba5710cf3fd83db68006a018119f5b550796d1cc4d5839e7c4eea028120",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x572239202E4af02097eE555E2002a56be96Bc59e",
+      "txHash": "0xf59d55eeb5efd446962b2f8f2fb1e7eff8721bcd1fdb24bc9edac73ba87334c0",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x60dDF82710237D0fe4d15722bd1a209033973bC1",
+      "txHash": "0x77bcd919b712530d131dd8a249fd3bfc26d8f88b5ecd6cff10779d2a28589c8a",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x502D1f2eDa6984D55267CAc4BAE5009Bd4B67ec1",
+      "txHash": "0x6bbc28f75b13a60d821f73a7d699c8e56e5ab19fe77cb719861db872e3074ee0",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x455780905091CBeEE0a48EAA26D219f9BfD21ec0",
+      "txHash": "0xf67de2049433f5e8685c9c38ad861428a5b91de27acfa01b1139d4f9be2275f6",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xFC019a6708B55FB30EF5A53660B59359bc2c7D13",
+      "txHash": "0xc27a243c72534a07e23571536a758497882d3e1fcd2529d08ad4bbfc61a64ace",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x7bd55a10cb0fB826042F55439c4EdDd51e46ef78",
+      "txHash": "0xb5a7e743af1fddc4c53ffd747ac156712dbe51df933d659b6aae273b3f3ac324",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "6ae3f2f2bee74f25c1839c2d5b45e0db96b17d6a03c9ed3a37cfca26d3b5066c": {
+      "address": "0xBAc305e5456F0F9afd16D269f3d17A10C66dAc4D",
+      "txHash": "0x94a6ef62480b0594b7bbdb7eb33e289ae8bb958087682bc1cc22dbdf5a347218",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:28"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:20"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:74"
+          },
+          {
+            "contract": "ReentrancyGuardUpgradeable",
+            "label": "_status",
+            "type": "t_uint256",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:37"
+          },
+          {
+            "contract": "ReentrancyGuardUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:67"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "etaco",
+            "type": "t_contract(eTacoToken)7523",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:74"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "devaddr",
+            "type": "t_address",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:76"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "provider",
+            "type": "t_contract(ILiquidityProvider)7928",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:78"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "endBlock",
+            "type": "t_uint256",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:80"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "etacoForFirstBlock",
+            "type": "t_uint256",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:82"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "migrator",
+            "type": "t_contract(IMigrator)4593",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:84"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "poolInfo",
+            "type": "t_array(t_struct(PoolInfo)4620_storage)dyn_storage",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:86"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "userInfo",
+            "type": "t_mapping(t_uint256,t_mapping(t_address,t_struct(UserInfo)4610_storage))",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:88"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "isPoolExist",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:89"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "totalAllocPoint",
+            "type": "t_uint256",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:91"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "startBlock",
+            "type": "t_uint256",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:93"
+          },
+          {
+            "contract": "eTacoChef",
+            "label": "_apiID",
+            "type": "t_uint256",
+            "src": "cache/solpp-generated-contracts/eTacoChef.sol:94"
+          }
+        ],
+        "types": {
+          "t_contract(eTacoToken)7523": {
+            "label": "contract eTacoToken"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_contract(ILiquidityProvider)7928": {
+            "label": "contract ILiquidityProvider"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_contract(IMigrator)4593": {
+            "label": "contract IMigrator"
+          },
+          "t_array(t_struct(PoolInfo)4620_storage)dyn_storage": {
+            "label": "struct eTacoChef.PoolInfo[]"
+          },
+          "t_struct(PoolInfo)4620_storage": {
+            "label": "struct eTacoChef.PoolInfo",
+            "members": [
+              {
+                "label": "lpToken",
+                "type": "t_contract(IERC20)1611"
+              },
+              {
+                "label": "allocPoint",
+                "type": "t_uint256"
+              },
+              {
+                "label": "lastRewardBlock",
+                "type": "t_uint256"
+              },
+              {
+                "label": "acceTacoPerShare",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_contract(IERC20)1611": {
+            "label": "contract IERC20"
+          },
+          "t_mapping(t_uint256,t_mapping(t_address,t_struct(UserInfo)4610_storage))": {
+            "label": "mapping(uint256 => mapping(address => struct eTacoChef.UserInfo))"
+          },
+          "t_mapping(t_address,t_struct(UserInfo)4610_storage)": {
+            "label": "mapping(address => struct eTacoChef.UserInfo)"
+          },
+          "t_struct(UserInfo)4610_storage": {
+            "label": "struct eTacoChef.UserInfo",
+            "members": [
+              {
+                "label": "amount",
+                "type": "t_uint256"
+              },
+              {
+                "label": "rewardDebt",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "3a6fb608308ab7cdb1e04dcc59d1d21f8226058da16e009939ec1e12365c6ce0": {
+      "address": "0xFFa71a56E68D217e2E290Cd553D012C048f5Bc03",
+      "txHash": "0x2d083eb4a6469cf157a1c822a808c00cf2583c155f74ecd10e3bfceea6032be0",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:28"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:20"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:74"
+          },
+          {
+            "contract": "Staker",
+            "label": "_masterChef",
+            "type": "t_contract(IMasterChef)7990",
+            "src": "cache/solpp-generated-contracts/Staker.sol:15"
+          }
+        ],
+        "types": {
+          "t_contract(IMasterChef)7990": {
+            "label": "contract IMasterChef"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          },
+          "t_bool": {
+            "label": "bool"
+          }
+        }
+      }
+    }
+  }
+}

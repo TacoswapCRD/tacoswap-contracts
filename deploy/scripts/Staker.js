@@ -6,7 +6,7 @@ module.exports = async function (hre) {
     const { deployer } = await getNamedAccounts()
     const { IS_UPGRADE, IS_PROXY, UPGRADEABLE_PROXY_ADDRESS } = await eConfig();
 
-    const etacochef = await ethers.getContract("eTacoChef");
+    // const etacochef = await ethers.getContract("eTacoChef");
 
     const pToken = await deploy("PToken", {
         from: deployer,
@@ -20,11 +20,11 @@ module.exports = async function (hre) {
         contractName: "Staker",
         isUpgrade: IS_UPGRADE,
         isProxy: IS_PROXY,
-        args: [etacochef.address, pToken.address],
+        args: ["0x7d8b76Ce715f714be89d7b4065C6dA762ADfaBF6", pToken.address],
         upgradeableProxyAddress: UPGRADEABLE_PROXY_ADDRESS
     }
 
     await contractDeploy(hre, options)
 }
 module.exports.tags = ["Staker"]
-module.exports.dependencies = ["eTacoChef"];
+module.exports.dependencies = ["eTacoChef", "eTacoToken"];

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.12;
+pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -27,7 +27,7 @@ contract Migrator is Ownable {
     address public uniFactory;
     address public sushiFactory;
     uint256 public notBeforeBlock;
-    uint256 public desiredLiquidity = uint256(-1);
+    uint256 public desiredLiquidity = type(uint256).max;
 
     mapping(address => bool) public isMigrated;
 
@@ -130,7 +130,7 @@ contract Migrator is Ownable {
         desiredLiquidity = lp;
         orig.transferFrom(msg.sender, address(newChef), lp);
         dummyToken.mint(msg.sender, lp);
-        desiredLiquidity = uint256(-1);
+        desiredLiquidity = type(uint256).max;
         return dummyToken;
     }
 }

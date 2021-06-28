@@ -1,25 +1,23 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.12;
+pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interfaces/IMasterChef.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 // #if IS_PROXY
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 // #else
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 // #endif
 
 // #if IS_PROXY
 contract Staker is OwnableUpgradeable {
-    using SafeERC20Upgradeable for IERC20;
 // #else
 contract Staker is Ownable {
-    using SafeERC20 for IERC20;
 // #endif
+    using SafeERC20 for IERC20;
     IMasterChef private _masterChef;
     IERC20 public token;
 
