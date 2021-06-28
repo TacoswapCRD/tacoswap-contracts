@@ -1,11 +1,11 @@
 module.exports = async function ({ ethers, getNamedAccounts, deployments, getChainId }) {
   const { deploy } = deployments
 
-  const { deployer, dev } = await getNamedAccounts()
+  const { deployer, dev, chugun } = await getNamedAccounts()
 
   await deploy('TacoswapV2Factory', {
     from: deployer,
-    args: [],
+    args: [chugun],
     log: true,
     deterministicDeployment: false,
   })
