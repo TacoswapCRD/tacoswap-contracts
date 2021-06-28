@@ -23,7 +23,7 @@ library TacoswapV2Library {
                 hex'ff',
                 factory,
                 keccak256(abi.encodePacked(token0, token1)),
-                hex'5d9d542450a3098a75ab8ddff818336d8ec3c7cf5bc13ffc3f426513073b735f' // init code hash
+                hex'e0c1140582def20a3e27ee6bc59623d31d4093d50ec532fc36467e8809cc1ac0' // init code hash
             ))));
     }
 

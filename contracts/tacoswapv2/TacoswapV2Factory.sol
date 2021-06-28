@@ -6,8 +6,8 @@ import './interfaces/ITacoswapV2Factory.sol';
 import './TacoswapV2Pair.sol';
 
 contract TacoswapV2Factory is ITacoswapV2Factory {
-    // address public override feeTo;
-    // address public override feeToSetter;
+    address public override feeTo;
+    address public override feeToSetter;
     address public override migrator;
 
     mapping(address => mapping(address => address)) public override getPair;
@@ -15,9 +15,9 @@ contract TacoswapV2Factory is ITacoswapV2Factory {
 
     event PairCreated(address indexed token0, address indexed token1, address pair, uint);
 
-    // constructor(address _feeToSetter) public {
-    //     feeToSetter = _feeToSetter;
-    // }
+    constructor(address _feeToSetter) public {
+        feeToSetter = _feeToSetter;
+    }
 
     function allPairsLength() external override view returns (uint) {
         return allPairs.length;
@@ -44,9 +44,20 @@ contract TacoswapV2Factory is ITacoswapV2Factory {
         emit PairCreated(token0, token1, pair, allPairs.length);
     }
 
+    function setFeeTo(address _feeTo) external override {
+        require(msg.sender == feeToSetter, 'TacoswapV2: FORBIDDEN');
+        feeTo = _feeTo;
+    }
 
     function setMigrator(address _migrator) external override {
+        require(msg.sender == feeToSetter, 'TacoswapV2: FORBIDDEN');
         migrator = _migrator;
     }
+
+    function setFeeToSetter(address _feeToSetter) external override {
+        require(msg.sender == feeToSetter, 'TacoswapV2: FORBIDDEN');
+        feeToSetter = _feeToSetter;
+    }
+
 
 }
