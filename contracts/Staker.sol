@@ -28,13 +28,13 @@ contract Staker is Ownable {
         __Ownable_init();
         _masterChef = _mChef;
         token = _token;
-        IERC20(_token).safeApprove(_mChef, type(uint256).max);
+        IERC20(_token).safeApprove(address(_mChef), type(uint256).max);
     }
     // #else
     constructor(IMasterChef _mChef, IERC20 _token) public {
         _masterChef = _mChef;
         token = _token;
-        IERC20(_token).safeApprove(_mChef, type(uint256).max);
+        IERC20(_token).safeApprove(address(_mChef), type(uint256).max);
     }
     // #endif
 

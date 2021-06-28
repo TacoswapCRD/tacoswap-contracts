@@ -15,8 +15,8 @@ contract TacoswapV2Factory is ITacoswapV2Factory {
 
     event PairCreated(address indexed token0, address indexed token1, address pair, uint);
 
-    constructor(address _feeToSetter) public {
-        feeToSetter = _feeToSetter;
+    constructor() public {
+        feeToSetter = msg.sender;
     }
 
     function allPairsLength() external override view returns (uint) {
@@ -58,6 +58,4 @@ contract TacoswapV2Factory is ITacoswapV2Factory {
         require(msg.sender == feeToSetter, 'TacoswapV2: FORBIDDEN');
         feeToSetter = _feeToSetter;
     }
-
-
 }

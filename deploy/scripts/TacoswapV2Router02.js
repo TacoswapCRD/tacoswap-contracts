@@ -89,7 +89,7 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     )
     
     await factory.createPair(tokenA.address, tokenB.address)   
-  } 
+  }
 }
 
 module.exports.tags = ["TacoswapV2Router02", "DEX"]
