@@ -36,7 +36,7 @@ import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
-import CombProvider from './context/UTacoProvider/UTacoProvider'
+import CombProvider from './context/eTacoProvider/eTacoProvider'
 import FarmsProvider from './context/Farms'
 import { Symfoni } from "./hardhat/SymfoniContext";
 

@@ -127,7 +127,7 @@ task("masterchef:withdraw", "MasterChef withdraw")
   await (await masterChef.connect(await getNamedSigner("dev")).withdraw(pid, amount)).wait()
 });
 
-task("bar:enter", "UTacoBar enter")
+task("bar:enter", "eTacoBar enter")
 .addParam("amount", "Amount")
 .setAction(async function ({ amount }, { ethers: { getNamedSigner } }, runSuper) {
   const taco = await ethers.getContract("TacoToken")
@@ -155,7 +155,7 @@ task("maker:serve", "TacoBar serve")
 .addParam("a", "Token A")
 .addParam("b", "Token B")
 .setAction(async function ({ a, b }, { ethers: { getNamedSigner } }, runSuper) {
-  const maker = await ethers.getContract("UTacoMaker")
+  const maker = await ethers.getContract("eTacoMaker")
 
   await (await maker.connect(await getNamedSigner("dev")).convert(a, b, { gasLimitgasLimit: 5198000 })).wait()
 });

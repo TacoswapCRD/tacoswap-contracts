@@ -11,16 +11,16 @@ import PortisIcon from '../../assets/images/portisIcon.png'
 import { ButtonSecondary, ButtonSignOut } from '../Button'
 import { TYPE } from '../../theme'
 import { ReactComponent as Jar } from '../../assets/logos/tacoLogo.svg'
-import useUTaco from '../../hooks/useUTaco'
+import useeTaco from '../../hooks/useeTaco'
 import { useETHBalances, useTokenBalance } from '../../state/wallet/hooks'
-import { getSushiAddress } from '../../utaco/utils'
+import { getSushiAddress } from '../../etaco/utils'
 // import Value from 'components/Value'
 // import { getBalanceNumber } from '../../utils/formatBalance'
 import { AccountElement } from '../Header'
 import Button from '../Button/Button'
 import { shortenAddress } from '../../utils'
 import useAllEarnings from '../../hooks/useAllEarnings'
-import { BigNumber } from '../../utaco'
+import { BigNumber } from '../../etaco'
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -190,7 +190,7 @@ export default function AccountDetails({
     // eslint-disable-next-line
   }, [toggleWalletModal])
 
-  const Taco = useUTaco()
+  const Taco = useeTaco()
   const TacoBalanceAmount = useTokenBalance(getSushiAddress(Taco))
   const allEarnings = useAllEarnings()
   let sumEarning = 0

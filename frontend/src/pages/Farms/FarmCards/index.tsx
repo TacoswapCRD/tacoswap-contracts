@@ -127,7 +127,7 @@ const FarmCards = ({
           <FlexContainer style={{ marginTop: '140px' }}>
             <Star color="#F4B740" style={{ marginRight: '5px', fill: '#F4B740' }} size={20} />
             <StyledP>
-              ️ Every time you stake and unstake LP tokens, the contract will automagically harvest uTACO rewards for
+              ️ Every time you stake and unstake LP tokens, the contract will automagically harvest eTaco rewards for
               you!
             </StyledP>
           </FlexContainer>
@@ -165,7 +165,7 @@ const FarmCard = ({ farm }: any) => {
             {REWARD_PER_BLOCK.times(BLOCKS_PER_DAY)
               .times(farm.poolWeight)
               .toFixed(0)}{' '}
-            UTACO/day
+            eTaco/day
           </div>
         </StyledUpper>
         {/* <CardContent padding={15}> */}

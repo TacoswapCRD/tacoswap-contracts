@@ -17,13 +17,13 @@ describe("Migrator", function () {
   before(async () => {
     accounts = await getNamedSigners();
     await deployments.fixture();
-    this.crdToken = await ethers.getContractAt("UTacoToken", CRDToken, accounts.caller);
-    this.uTaco = await ethers.getContract("UTacoToken", accounts.caller);
-    this.uTacoRoll = await ethers.getContract("UTacoRoll", accounts.caller);
+    this.crdToken = await ethers.getContractAt("eTacoToken", CRDToken, accounts.caller);
+    this.eTaco = await ethers.getContract("eTacoToken", accounts.caller);
+    this.eTacoRoll = await ethers.getContract("eTacoRoll", accounts.caller);
     this.Migrator = await ethers.getContractFactory("Migrator");
     this.newFactory = await ethers.getContract("TacoswapV2Factory", accounts.caller);
-    this.oldChef = await ethers.getContractAt("UTacoChef", oldChefAddress, accounts.caller);
-    this.newChef = await ethers.getContract("UTacoChef", accounts.caller);
+    this.oldChef = await ethers.getContractAt("eTacoChef", oldChefAddress, accounts.caller);
+    this.newChef = await ethers.getContract("eTacoChef", accounts.caller);
     this.poolz = await ethers.getContractAt("ITacoToken", poolzAddress, accounts.caller);
     this.uniRouter = await ethers.getContractAt("ITacoswapV2Router02", uniRouterAddress, accounts.caller);
     this.sushiRouter = await ethers.getContractAt("ITacoswapV2Router02", sushiRouterAddress, accounts.caller);
@@ -48,7 +48,7 @@ describe("Migrator", function () {
     });
 
     await this.newChef.connect(accounts.owner).setMigrator(this.migrator.address);
-    await this.uTaco.connect(accounts.holder).transfer(this.newChef.address, this.uTaco.totalSupply())
+    await this.eTaco.connect(accounts.holder).transfer(this.newChef.address, this.eTaco.totalSupply())
   })
 
   beforeEach("Before: ", async () => {
@@ -88,7 +88,7 @@ describe("Migrator", function () {
     await this.oldChef.userInfo(1, eoaUni);
 
     await expect(eoaUniAccount.sendTransaction(await this.migrator.connect(eoaUniAccount).populateTransaction.migrateUserInfo()))
-      .to.be.revertedWith("UTacoChef: Pools must be migrated");
+      .to.be.revertedWith("eTacoChef: Pools must be migrated");
   })
 
   it("Should migrate all pools from oldChef", async () => {
@@ -114,7 +114,7 @@ describe("Migrator", function () {
       expect(newChefPools[i].lpToken).to.equal(oldChefPools[i].lpToken)
       expect(newChefPools[i].allocPoint).to.equal(oldChefPools[i].allocPoint)
       expect(newChefPools[i].lastRewardBlock).to.equal(startBlock - 1)
-      expect(newChefPools[i].accUTacoPerShare).to.equal(0)
+      expect(newChefPools[i].acceTacoPerShare).to.equal(0)
     }
     expect(newChefPools.length).to.equal(poolsToMigrate.length);
     expect(await this.newChef.totalAllocPoint()).to.equal(await this.oldChef.totalAllocPoint());
@@ -143,7 +143,7 @@ describe("Migrator", function () {
       expect(newChefPools[i].lpToken).to.equal(oldChefPools[i].lpToken)
       expect(newChefPools[i].allocPoint).to.equal(oldChefPools[i].allocPoint)
       expect(newChefPools[i].lastRewardBlock).to.equal(startBlock - 1)
-      expect(newChefPools[i].accUTacoPerShare).to.equal(0)
+      expect(newChefPools[i].acceTacoPerShare).to.equal(0)
     }
     expect(newChefPools.length).to.equal(poolsToMigrate.length);
     expect(await this.newChef.totalAllocPoint()).to.equal(await this.oldChef.totalAllocPoint());
@@ -217,13 +217,13 @@ describe("Migrator", function () {
 
     if (blockToAdvance > startBlock + 100) blockToAdvance = startBlock + 100
 
-    eoaUniReward = await this.newChef.pendingUTaco(1, eoaUni);
+    eoaUniReward = await this.newChef.pendingeTaco(1, eoaUni);
 
     let reward = await this.newChef.getReward(startBlock - 1, blockToAdvance);
 
     multiplier = reward.mul(poolInfo.allocPoint).div(totalAllocPoint)
-    accUTacoPerShare = poolInfo.accUTacoPerShare.add(multiplier.mul(10 ** 12).div(lpSupply))
-    eoaUniPendingReward = userInfo.amount.mul(accUTacoPerShare).div(10 ** 12).sub(userInfo.rewardDebt)
+    acceTacoPerShare = poolInfo.acceTacoPerShare.add(multiplier.mul(10 ** 12).div(lpSupply))
+    eoaUniPendingReward = userInfo.amount.mul(acceTacoPerShare).div(10 ** 12).sub(userInfo.rewardDebt)
 
     expect(eoaUniReward).to.equal(eoaUniPendingReward)
   })
@@ -282,15 +282,15 @@ describe("Migrator", function () {
 
     if (blockToAdvance > startBlock + 100) blockToAdvance = startBlock + 100
 
-    eoaUniReward = await this.newChef.pendingUTaco(1, eoaUni);
+    eoaUniReward = await this.newChef.pendingeTaco(1, eoaUni);
 
     let reward = await this.newChef.getReward(startBlock - 1, blockToAdvance);
 
     multiplier = reward.mul(poolInfo.allocPoint).div(totalAllocPoint)
-    accUTacoPerShare = poolInfo.accUTacoPerShare.add(multiplier.mul(10 ** 12).div(lpSupply))
-    eoaUniPendingReward = userInfo.amount.mul(accUTacoPerShare).div(10 ** 12).sub(userInfo.rewardDebt)
+    acceTacoPerShare = poolInfo.acceTacoPerShare.add(multiplier.mul(10 ** 12).div(lpSupply))
+    eoaUniPendingReward = userInfo.amount.mul(acceTacoPerShare).div(10 ** 12).sub(userInfo.rewardDebt)
 
-    bobPendingReward = await this.newChef.pendingUTaco(1, accounts.bob.address)
+    bobPendingReward = await this.newChef.pendingeTaco(1, accounts.bob.address)
 
     expect(eoaUniReward).to.equal(eoaUniPendingReward)
     expect(bobPendingReward).to.equal(eoaUniReward)

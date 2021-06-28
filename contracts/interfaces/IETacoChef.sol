@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.6.12;
 
-interface IUTacoChef {
+interface IETacoChef {
     function poolLength() external view returns (uint256);
 
     function startBlock() external view returns (uint256);
@@ -29,7 +29,7 @@ interface IUTacoChef {
         view
         returns (uint256, uint256);
 
-    function pendingUTaco(uint256, address) external view returns (uint256);
+    function pendingeTaco(uint256, address) external view returns (uint256);
 
     function speedStake(
         uint256,

@@ -11,16 +11,16 @@ import "./tacoswapv2/libraries/TacoswapV2Library.sol";
 import "hardhat/console.sol";
 
 /**
- *  @title  UTacoRoll contract
- *  @notice UTacoRoll helps to migrate your existing UniSwap or SushiSwap LP tokens to TacoSwap LP ones
+ *  @title  eTacoRoll contract
+ *  @notice eTacoRoll helps to migrate your existing UniSwap or SushiSwap LP tokens to TacoSwap LP ones
  **/
-contract UTacoRoll {
+contract eTacoRoll {
     using SafeERC20 for IERC20;
 
     ITacoswapV2Router01 public router;
 
     /**
-     * @notice Construct a new UTacoRoll contract
+     * @notice Construct a new eTacoRoll contract
      *  @param _router The address of TacoSwapV2Router.
      **/
     constructor(ITacoswapV2Router01 _router) public {
@@ -125,8 +125,8 @@ contract UTacoRoll {
         (amountA, amountB) = tokenA == token0
             ? (amount0, amount1)
             : (amount1, amount0);
-        require(amountA >= amountAMin, "UTacoRoll: INSUFFICIENT_A_AMOUNT");
-        require(amountB >= amountBMin, "UTacoRoll: INSUFFICIENT_B_AMOUNT");
+        require(amountA >= amountAMin, "eTacoRoll: INSUFFICIENT_A_AMOUNT");
+        require(amountB >= amountBMin, "eTacoRoll: INSUFFICIENT_B_AMOUNT");
     }
 
     /**

@@ -92,5 +92,5 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
   } 
 }
 
-module.exports.tags = ["TacoswapV2Router02"]
-module.exports.dependencies = ["TacoswapV2Factory", "test"]
+module.exports.tags = ["TacoswapV2Router02", "DEX"]
+module.exports.dependencies = ["TacoswapV2Factory"]

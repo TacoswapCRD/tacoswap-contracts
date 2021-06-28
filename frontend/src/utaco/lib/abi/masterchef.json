@@ -2,8 +2,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract UTacoToken",
-        "name": "_utaco",
+        "internalType": "contract eTacoToken",
+        "name": "_etaco",
         "type": "address"
       },
       {
@@ -13,7 +13,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_utacoForFirstBlock",
+        "name": "_etacoForFirstBlock",
         "type": "uint256"
       },
       {
@@ -364,7 +364,7 @@
         "type": "address"
       }
     ],
-    "name": "pendingUTaco",
+    "name": "pendingeTaco",
     "outputs": [
       {
         "internalType": "uint256",
@@ -402,7 +402,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "accUTacoPerShare",
+        "name": "acceTacoPerShare",
         "type": "uint256"
       }
     ],
@@ -687,10 +687,10 @@
   },
   {
     "inputs": [],
-    "name": "utaco",
+    "name": "etaco",
     "outputs": [
       {
-        "internalType": "contract UTacoToken",
+        "internalType": "contract eTacoToken",
         "name": "",
         "type": "address"
       }
@@ -700,7 +700,7 @@
   },
   {
     "inputs": [],
-    "name": "utacoForFirstBlock",
+    "name": "etacoForFirstBlock",
     "outputs": [
       {
         "internalType": "uint256",

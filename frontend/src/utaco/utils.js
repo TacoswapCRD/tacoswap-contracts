@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import React, { useContext, useEffect, useState } from 'react';
 import { ethers } from 'ethers'
 import { ReactComponent as LogoEthereum } from '../assets/logos/logos_ethereum.svg'
-import { UTacoTokenContext } from '../hardhat/SymfoniContext'
+import { eTacoTokenContext } from '../hardhat/SymfoniContext'
 // import logoEthereum from '../assets/logos/logos_ethereum.svg'
 
 BigNumber.config({
@@ -17,29 +17,29 @@ BigNumber.config({
 //   },
 // }
 
-export const getMasterChefAddress = utaco => {
-  return utaco && utaco.masterChefAddress
+export const getMasterChefAddress = etaco => {
+  return etaco && etaco.masterChefAddress
 }
-export const getSushiAddress = utaco => {
+export const getSushiAddress = etaco => {
 console.log("🚀 ~ file: utils.js ~ line 23 ~ getSushiAddress", getSushiAddress)
-  return utaco && utaco.sushiAddress
+  return etaco && etaco.sushiAddress
 }
-export const getWethContract = utaco => {
-  return utaco && utaco.contracts && utaco.contracts.weth
-}
-
-export const getMasterChefContract = utaco => {
-  return utaco && utaco.contracts && utaco.contracts.masterChef
+export const getWethContract = etaco => {
+  return etaco && etaco.contracts && etaco.contracts.weth
 }
 
-export const getSushiContract = utaco => {
+export const getMasterChefContract = etaco => {
+  return etaco && etaco.contracts && etaco.contracts.masterChef
+}
+
+export const getSushiContract = etaco => {
 console.log("🚀 ~ file: utils.js ~ line 34 ~ getSushiContract", getSushiContract)
-  return utaco && utaco.contracts && utaco.contracts.utaco
+  return etaco && etaco.contracts && etaco.contracts.etaco
 }
 
-export const getFarms = utaco => {
-  return utaco
-    ? utaco.contracts.pools.map(
+export const getFarms = etaco => {
+  return etaco
+    ? etaco.contracts.pools.map(
         ({
           pid,
           name,
@@ -71,7 +71,7 @@ export const getFarms = utaco => {
           quoteTokenContract,
           quoteTokenSymbol,
           earnToken: 'TACO',
-          earnTokenAddress: utaco.contracts.utaco.options?.address,
+          earnTokenAddress: etaco.contracts.etaco.options?.address,
           icon,
           quoteIcon,
           active,
@@ -89,7 +89,7 @@ export const getPoolWeight = async (masterChefContract, pid) => {
 }
 
 export const getEarned = async (masterChefContract, pid, account) => {
-  return masterChefContract.methods.pendingUTaco(pid, account).call()
+  return masterChefContract.methods.pendingeTaco(pid, account).call()
 }
 
 export const approve = async (lpContract, masterChefContract, account) => {
@@ -99,9 +99,9 @@ export const approve = async (lpContract, masterChefContract, account) => {
 }
 
 export const getSushiSupply = async () => {
-  // const utacoToken = useContext(UTacoTokenContext);
+  // const etacoToken = useContext(eTacoTokenContext);
   // const burned = new BigNumber(250)
-  // return new BigNumber(await utacoToken.totalSupply().call()).minus(
+  // return new BigNumber(await etacoToken.totalSupply().call()).minus(
   //   burned.multipliedBy(new BigNumber(10).pow(18))
   // )
 }

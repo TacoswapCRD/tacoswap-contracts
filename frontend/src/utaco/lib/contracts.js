@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js/bignumber'
 import ERC20Abi from './abi/erc20.json'
-import UTacoChefAbi from './abi/masterchef.json'
-import UTacoTokenAbi from './abi/taco.json'
+import eTacoChefAbi from './abi/masterchef.json'
+import eTacoTokenAbi from './abi/taco.json'
 import UNIV2PairAbi from './abi/uni_v2_lp.json'
 import WETHAbi from './abi/weth.json'
 import { contractAddresses, SUBTRACT_GAS_LIMIT, supportedPools } from './constants'
@@ -16,8 +16,8 @@ export class Contracts {
     this.defaultGas = options.defaultGas
     this.defaultGasPrice = options.defaultGasPrice
 
-    this.utaco = new this.web3.eth.Contract(UTacoTokenAbi)
-    this.masterChef = new this.web3.eth.Contract(UTacoChefAbi)
+    this.etaco = new this.web3.eth.Contract(eTacoTokenAbi)
+    this.masterChef = new this.web3.eth.Contract(eTacoChefAbi)
     this.weth = new this.web3.eth.Contract(WETHAbi)
 
     this.pools = supportedPools.map(pool =>
@@ -41,7 +41,7 @@ export class Contracts {
       if (address) contract.options.address = address
       else console.error('Contract address not found in network', networkId)
     }
-    setProvider(this.utaco, contractAddresses.taco[networkId])
+    setProvider(this.etaco, contractAddresses.taco[networkId])
     setProvider(this.masterChef, contractAddresses.masterChef[networkId])
     setProvider(this.weth, contractAddresses.weth[networkId])
 
@@ -55,7 +55,7 @@ export class Contracts {
   }
 
   setDefaultAccount(account) {
-    this.utaco.options.from = account
+    this.etaco.options.from = account
     this.masterChef.options.from = account
   }
 

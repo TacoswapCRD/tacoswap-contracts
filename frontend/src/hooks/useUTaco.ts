@@ -1,12 +1,12 @@
 import { useContext } from 'react'
-import { Context } from '../context/UTacoProvider/UTacoProvider'
-import { UTacoTokenContext } from "../hardhat/SymfoniContext"
+import { Context } from '../context/eTacoProvider/eTacoProvider'
+import { eTacoTokenContext } from "../hardhat/SymfoniContext"
 
-const useUTaco = () => {
-  const utaco = useContext(UTacoTokenContext)
-  // console.log("🚀 ~ file: useUTaco.ts ~ line 6 ~ useUTaco ~ Utoken",  Utoken.instance?.symbol())
-  // const { utaco } = useContext(Context)
-  return utaco.instance
+const useeTaco = () => {
+  const etaco = useContext(eTacoTokenContext)
+  // console.log("🚀 ~ file: useeTaco.ts ~ line 6 ~ useeTaco ~ Utoken",  Utoken.instance?.symbol())
+  // const { etaco } = useContext(Context)
+  return etaco.instance
 }
 
-export default useUTaco
+export default useeTaco

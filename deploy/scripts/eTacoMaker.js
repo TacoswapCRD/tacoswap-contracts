@@ -8,8 +8,8 @@ module.exports = async function ({ ethers: { getNamedSigner }, getNamedAccounts,
   const chainId = await getChainId()
 
   const factory = await ethers.getContract("TacoswapV2Factory")
-  const bar = await ethers.getContract("UTacoBar")
-  const utaco = await ethers.getContract("UTacoToken")
+  const bar = await ethers.getContract("eTacoBar")
+  const etaco = await ethers.getContract("eTacoToken")
   
   let wethAddress;
   
@@ -21,19 +21,19 @@ module.exports = async function ({ ethers: { getNamedSigner }, getNamedAccounts,
     throw Error("No WETH!")
   }
 
-  await deploy("UTacoMaker", {
+  await deploy("eTacoMaker", {
     from: deployer,
-    args: [factory.address, bar.address, utaco.address, wethAddress],
+    args: [factory.address, bar.address, etaco.address, wethAddress],
     log: true,
     deterministicDeployment: false
   })
 
-  const maker = await ethers.getContract("UTacoMaker")
+  const maker = await ethers.getContract("eTacoMaker")
   if (await maker.owner() !== owner) {
     console.log("Setting maker owner")
     await (await maker.transferOwnership(owner, true, false)).wait()
   }
 }
 
-module.exports.tags = ["UTacoMaker"]
-module.exports.dependencies = ["UTacoBar"]
+module.exports.tags = ["eTacoMaker"]
+module.exports.dependencies = ["eTacoBar"]

@@ -21,7 +21,7 @@ module.exports = async function ({ getNamedAccounts, getChainId, deployments }) 
 
   const tacoswapRouter = await deployments.get("TacoswapV2Router02")
 
-  await deploy("UTacoRoll", {
+  await deploy("eTacoRoll", {
     from: deployer,
     args: [tacoswapRouter.address],
     log: true,
@@ -29,5 +29,5 @@ module.exports = async function ({ getNamedAccounts, getChainId, deployments }) 
   })
 }
 
-module.exports.tags = ["UTacoRoll"]
+module.exports.tags = ["eTacoRoll"]
 module.exports.dependencies = ["TacoswapV2Router02"]

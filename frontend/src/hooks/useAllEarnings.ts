@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
-import { getEarned, getMasterChefContract, getFarms } from '../utaco/utils'
-import useUTaco from './useUTaco'
+import { getEarned, getMasterChefContract, getFarms } from '../etaco/utils'
+import useeTaco from './useeTaco'
 import useBlock from './useBlock'
 import { useWeb3React } from '@web3-react/core'
 
 const useAllEarnings = () => {
   const [balances, setBalance] = useState([])
   const { account } = useWeb3React()
-  const sushi = useUTaco()
+  const sushi = useeTaco()
   const farms = getFarms(sushi)
 
   const masterChefContract = getMasterChefContract(sushi)

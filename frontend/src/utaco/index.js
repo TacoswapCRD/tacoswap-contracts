@@ -5,5 +5,5 @@ BigNumber.config({
   DECIMAL_PLACES: 80
 })
 
-export { UTaco } from './UTaco.js'
+export { eTaco } from './eTaco.js'
 export { BigNumber }

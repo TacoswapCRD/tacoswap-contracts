@@ -31,7 +31,7 @@ module.exports = async function (
 
   const nonce = await token.connect(dev).nonces(dev.address)
 
-  const utacoRoll = await ethers.getContract("UTacoRoll")
+  const etacoRoll = await ethers.getContract("eTacoRoll")
 
   const chainId = await getChainId()
 
@@ -40,7 +40,7 @@ module.exports = async function (
     chainId,
     {
       owner: dev.address,
-      spender: utacoRoll.address,
+      spender: etacoRoll.address,
       value: await token.balanceOf(dev.address),
     },
     nonce,
@@ -54,7 +54,7 @@ module.exports = async function (
 
   console.log({ v, r: hexlify(r), s: hexlify(s) })
 
-  const migrateTx = await utacoRoll
+  const migrateTx = await etacoRoll
     .connect(dev)
     .migrateWithPermit(
       tokenA,

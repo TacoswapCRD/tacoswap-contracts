@@ -1,16 +1,16 @@
 import React, { createContext, useEffect, useState } from 'react'
 import Web3 from 'web3'
-import { UTaco } from '../../utaco/UTaco'
+import { eTaco } from '../../etaco/eTaco'
 import { useWeb3React } from '@web3-react/core'
 import { useCallback } from 'react'
 import { ethers } from 'ethers'
-export interface UTacoContext {
-  utaco?: typeof UTaco
+export interface eTacoContext {
+  etaco?: typeof eTaco
   block?: any
 }
 
-export const Context = createContext<UTacoContext>({
-  utaco: undefined,
+export const Context = createContext<eTacoContext>({
+  etaco: undefined,
   block: undefined
 })
 
@@ -19,7 +19,7 @@ interface SushiProvider {
 }
 declare global {
   interface Window {
-    utaco: any
+    etaco: any
     block: any
   }
 }

@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core'
 import { useCallback } from 'react'
-import { redeem } from '../utaco/utils'
+import { redeem } from '../etaco/utils'
 
 const useRedeem = (masterChefContract: any) => {
   const { account } = useWeb3React()

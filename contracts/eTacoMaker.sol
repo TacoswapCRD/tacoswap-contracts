@@ -11,11 +11,11 @@ import "./tacoswapv2/interfaces/ITacoswapV2Factory.sol";
 
 import "./Ownable.sol";
 
-// UTacoMaker is UTacoChef's left hand and kinda a wizard. He can cook up UTaco from pretty much anything!
-// This contract handles "serving up" rewards for xUTaco holders by trading tokens collected from fees for UTaco.
+// eTacoMaker is eTacoChef's left hand and kinda a wizard. He can cook up eTaco from pretty much anything!
+// This contract handles "serving up" rewards for xeTaco holders by trading tokens collected from fees for eTaco.
 
 // T1 - T4: OK
-contract UTacoMaker is Ownable {
+contract eTacoMaker is Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -24,7 +24,7 @@ contract UTacoMaker is Ownable {
     // V1 - V5: OK
     address public immutable bar;
     // V1 - V5: OK
-    address private immutable utaco;
+    address private immutable etaco;
     // V1 - V5: OK
     address private immutable weth;
 
@@ -46,12 +46,12 @@ contract UTacoMaker is Ownable {
     constructor(
         address _factory,
         address _bar,
-        address _utaco,
+        address _etaco,
         address _weth
     ) public {
         factory = ITacoswapV2Factory(_factory);
         bar = _bar;
-        utaco = _utaco;
+        etaco = _etaco;
         weth = _weth;
     }
 
@@ -69,8 +69,8 @@ contract UTacoMaker is Ownable {
     function setBridge(address token, address bridge) external onlyOwner {
         // Checks
         require(
-            token != utaco && token != weth && token != bridge,
-            "UTacoMaker: Invalid bridge"
+            token != etaco && token != weth && token != bridge,
+            "eTacoMaker: Invalid bridge"
         );
 
         // Effects
@@ -83,14 +83,14 @@ contract UTacoMaker is Ownable {
     // C6: It's not a fool proof solution, but it prevents flash loans, so here it's ok to use tx.origin
     modifier onlyEOA() {
         // Try to make flash-loan exploit harder to do by only allowing externally owned addresses.
-        require(msg.sender == tx.origin, "UTacoMaker: must use EOA");
+        require(msg.sender == tx.origin, "eTacoMaker: must use EOA");
         _;
     }
 
     // F1 - F10: OK
     // F3: _convert is separate to save gas by only checking the 'onlyEOA' modifier once in case of convertMultiple
-    // F6: There is an exploit to add lots of UTACO to the bar, run convert, then remove the UTACO again.
-    //     As the size of the UTacoBar has grown, this requires large amounts of funds and isn't super profitable anymore
+    // F6: There is an exploit to add lots of eTaco to the bar, run convert, then remove the eTaco again.
+    //     As the size of the eTacoBar has grown, this requires large amounts of funds and isn't super profitable anymore
     //     The onlyEOA modifier prevents this being done with a flash loan.
     // C1 - C24: OK
     function convert(address token0, address token1) external onlyEOA() {
@@ -117,7 +117,7 @@ contract UTacoMaker is Ownable {
         // Interactions
         // S1 - S4: OK
         ITacoswapV2Pair pair = ITacoswapV2Pair(factory.getPair(token0, token1));
-        require(address(pair) != address(0), "UTacoMaker: Invalid pair");
+        require(address(pair) != address(0), "eTacoMaker: Invalid pair");
         // balanceOf: S1 - S4: OK
         // transfer: X1 - X5: OK
         IERC20(address(pair)).safeTransfer(
@@ -147,37 +147,37 @@ contract UTacoMaker is Ownable {
         address token1,
         uint256 amount0,
         uint256 amount1
-    ) internal returns (uint256 utacoOut) {
+    ) internal returns (uint256 etacoOut) {
         // Interactions
         if (token0 == token1) {
             uint256 amount = amount0.add(amount1);
-            if (token0 == utaco) {
-                IERC20(utaco).safeTransfer(bar, amount);
-                utacoOut = amount;
+            if (token0 == etaco) {
+                IERC20(etaco).safeTransfer(bar, amount);
+                etacoOut = amount;
             } else if (token0 == weth) {
-                utacoOut = _toUTACO(weth, amount);
+                etacoOut = _toeTaco(weth, amount);
             } else {
                 address bridge = bridgeFor(token0);
                 amount = _swap(token0, bridge, amount, address(this));
-                utacoOut = _convertStep(bridge, bridge, amount, 0);
+                etacoOut = _convertStep(bridge, bridge, amount, 0);
             }
-        } else if (token0 == utaco) {
-            // eg. UTACO - ETH
-            IERC20(utaco).safeTransfer(bar, amount0);
-            utacoOut = _toUTACO(token1, amount1).add(amount0);
-        } else if (token1 == utaco) {
-            // eg. USDT - UTACO
-            IERC20(utaco).safeTransfer(bar, amount1);
-            utacoOut = _toUTACO(token0, amount0).add(amount1);
+        } else if (token0 == etaco) {
+            // eg. eTaco - ETH
+            IERC20(etaco).safeTransfer(bar, amount0);
+            etacoOut = _toeTaco(token1, amount1).add(amount0);
+        } else if (token1 == etaco) {
+            // eg. USDT - eTaco
+            IERC20(etaco).safeTransfer(bar, amount1);
+            etacoOut = _toeTaco(token0, amount0).add(amount1);
         } else if (token0 == weth) {
             // eg. ETH - USDC
-            utacoOut = _toUTACO(
+            etacoOut = _toeTaco(
                 weth,
                 _swap(token1, weth, amount1, address(this)).add(amount0)
             );
         } else if (token1 == weth) {
             // eg. USDT - ETH
-            utacoOut = _toUTACO(
+            etacoOut = _toeTaco(
                 weth,
                 _swap(token0, weth, amount0, address(this)).add(amount1)
             );
@@ -187,7 +187,7 @@ contract UTacoMaker is Ownable {
             address bridge1 = bridgeFor(token1);
             if (bridge0 == token1) {
                 // eg. MIC - USDT - and bridgeFor(MIC) = USDT
-                utacoOut = _convertStep(
+                etacoOut = _convertStep(
                     bridge0,
                     token1,
                     _swap(token0, bridge0, amount0, address(this)),
@@ -195,14 +195,14 @@ contract UTacoMaker is Ownable {
                 );
             } else if (bridge1 == token0) {
                 // eg. WBTC - DSD - and bridgeFor(DSD) = WBTC
-                utacoOut = _convertStep(
+                etacoOut = _convertStep(
                     token0,
                     bridge1,
                     amount0,
                     _swap(token1, bridge1, amount1, address(this))
                 );
             } else {
-                utacoOut = _convertStep(
+                etacoOut = _convertStep(
                     bridge0,
                     bridge1, // eg. USDT - DSD - and bridgeFor(DSD) = WBTC
                     _swap(token0, bridge0, amount0, address(this)),
@@ -225,7 +225,7 @@ contract UTacoMaker is Ownable {
         // X1 - X5: OK
         ITacoswapV2Pair pair =
             ITacoswapV2Pair(factory.getPair(fromToken, toToken));
-        require(address(pair) != address(0), "UTacoMaker: Cannot convert");
+        require(address(pair) != address(0), "eTacoMaker: Cannot convert");
 
         // Interactions
         // X1 - X5: OK
@@ -250,11 +250,11 @@ contract UTacoMaker is Ownable {
 
     // F1 - F10: OK
     // C1 - C24: OK
-    function _toUTACO(address token, uint256 amountIn)
+    function _toeTaco(address token, uint256 amountIn)
         internal
         returns (uint256 amountOut)
     {
         // X1 - X5: OK
-        amountOut = _swap(token, utaco, amountIn, bar);
+        amountOut = _swap(token, etaco, amountIn, bar);
     }
 }

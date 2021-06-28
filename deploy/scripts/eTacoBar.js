@@ -3,15 +3,15 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
 
   const { deployer } = await getNamedAccounts()
 
-  const utaco = await deployments.get("UTacoToken")
+  const etaco = await deployments.get("eTacoToken")
 
-  await deploy("UTacoBar", {
+  await deploy("eTacoBar", {
     from: deployer,
-    args: [utaco.address],
+    args: [etaco.address],
     log: true,
     deterministicDeployment: false
   })
 }
 
-module.exports.tags = ["UTacoBar"]
-module.exports.dependencies = ["UTacoToken"]
+module.exports.tags = ["eTacoBar"]
+module.exports.dependencies = ["eTacoToken"]

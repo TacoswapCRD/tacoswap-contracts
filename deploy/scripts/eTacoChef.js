@@ -4,24 +4,24 @@ module.exports = async function ({ ethers, deployments, getNamedAccounts }) {
   const { deployer, owner } = await getNamedAccounts()
   const signer = await ethers.getSigners()
 
-  const utaco = await ethers.getContract("UTacoToken")
+  const etaco = await ethers.getContract("eTacoToken")
   const router = await ethers.getContract("TacoswapV2Router02")
   const provider = await ethers.getContractAt("ILiquidityProvider", "0x5460CD29415F811dd9dD5BeD52aA1a56a5bac181");
  
   let blockNumber = await ethers.provider.getBlockNumber()
 
-  await deploy("UTacoChef", {
+  await deploy("eTacoChef", {
     from: deployer,
-    args: [utaco.address, owner, ethers.utils.parseEther("10"), blockNumber + 100, blockNumber + 200],
+    args: [etaco.address, owner, ethers.utils.parseEther("10"), blockNumber + 100, blockNumber + 200],
     log: true,
     deterministicDeployment: false
   })
 
-  const utacoChef = await ethers.getContract("UTacoChef", deployer)
-  if (await utacoChef.owner() !== owner) {
-    // Transfer ownership of UTacoChef to owner
-    console.log("Transfer ownership of UTacoChef to owner")
-    await (await utacoChef.transferOwnership(owner)).wait()
+  const etacoChef = await ethers.getContract("eTacoChef", deployer)
+  if (await etacoChef.owner() !== owner) {
+    // Transfer ownership of eTacoChef to owner
+    console.log("Transfer ownership of eTacoChef to owner")
+    await (await etacoChef.transferOwnership(owner)).wait()
   }
 
   await network.provider.request({
@@ -46,19 +46,19 @@ module.exports = async function ({ ethers, deployments, getNamedAccounts }) {
   const apiID = 1;
 
   await execute(
-    "UTacoChef",
+    "eTacoChef",
     {from: owner},
     "setProvider",
     ...[provider.address]
   )
 
   await execute(
-    "UTacoChef",
+    "eTacoChef",
     {from: owner},
     "setApi",
     ...[apiID]
   )
 }
 
-module.exports.tags = ["UTacoChef"]
-module.exports.dependencies = ["UTacoToken"];
+module.exports.tags = ["eTacoChef"]
+module.exports.dependencies = ["eTacoToken"];
