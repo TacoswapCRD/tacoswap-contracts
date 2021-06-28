@@ -5,6 +5,7 @@ const { ethers, getChainId } = require("hardhat");
 const { utils } = ethers;
 
 // const COMPUTED_INIT_CODE_HASH = keccak256(['bytes'], [bytecode])
+// console.log("🚀 ~ file: TacoswapV2Router02.js ~ line 8 ~ COMPUTED_INIT_CODE_HASH", COMPUTED_INIT_CODE_HASH)
 
 module.exports = async function ({ getNamedAccounts, deployments }) {
   const { deploy, execute, get } = deployments;
@@ -93,4 +94,4 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
 }
 
 module.exports.tags = ["TacoswapV2Router02", "DEX"]
-module.exports.dependencies = ["TacoswapV2Factory"]
+module.exports.dependencies = ["TacoswapV2Factory", "test"]

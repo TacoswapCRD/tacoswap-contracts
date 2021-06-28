@@ -3,7 +3,6 @@
 pragma solidity >=0.5.0;
 
 interface ITacoswapV2Factory {
-    event PairCreated(address indexed token0, address indexed token1, address pair, uint);
 
     function migrator() external view returns (address);
 

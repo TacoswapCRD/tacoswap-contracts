@@ -1,17 +1,21 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.12;
+pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/EnumerableSet.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./eTacoToken.sol";
 import "./interfaces/ILiquidityProvider.sol";
 import "hardhat/console.sol";
-
+// #if IS_PROXY
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+// #else
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+// #endif
 interface IMigrator {
     // Perform LP token migration from legacy UniswapV2 to TacoSwap.
     // Take the current LP token address and return the new LP token address.
@@ -34,7 +38,12 @@ interface IMigrator {
  *   # Withdraw
  *   # SpeedStake
  */
+
+ // #if IS_PROXY
+contract eTacoChef is OwnableUpgradeable, ReentrancyGuardUpgradeable {
+ // #else
 contract eTacoChef is Ownable, ReentrancyGuard {
+ // #endif
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
     /**
@@ -106,7 +115,26 @@ contract eTacoChef is Ownable, ReentrancyGuard {
         require(_pid < poolInfo.length, "Pool does not exist");
         _;
     }
+// #if IS_PROXY
+    function initialize(
+        eTacoToken _etaco,
+        address _devaddr,
+        uint256 _etacoForFirstBlock,
+        uint256 _startBlock,
+        uint256 _endBlock
+    ) public initializer{
+        __Ownable_init();
+        __ReentrancyGuard_init();
+        require(address(_etaco) != address(0x0), "eTacoChef::set zero address");
+        require(_devaddr != address(0x0), "eTacoChef::set zero address");
 
+        etaco = _etaco;
+        devaddr = _devaddr;
+        etacoForFirstBlock = _etacoForFirstBlock;
+        endBlock = _endBlock;
+        startBlock = _startBlock;
+    }
+// #else
     constructor(
         eTacoToken _etaco,
         address _devaddr,
@@ -123,6 +151,7 @@ contract eTacoChef is Ownable, ReentrancyGuard {
         endBlock = _endBlock;
         startBlock = _startBlock;
     }
+// #endif
 
     /// @return All pools amount
     function poolLength() external view returns (uint256) {

@@ -15,5 +15,5 @@ module.exports = async function ({ ethers, getNamedAccounts, deployments }) {
   }
   
   module.exports.tags = ["TacoToETaco"]
-  module.exports.dependencies = ["eTacoToken"]
+  module.exports.dependencies = ["eTacoToken", "ERC20Mock"]
   

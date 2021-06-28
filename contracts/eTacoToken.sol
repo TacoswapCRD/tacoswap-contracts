@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.12;
+pragma solidity 0.8.0;
 pragma experimental ABIEncoderV2;
 
 contract eTacoToken {
@@ -16,13 +16,13 @@ contract eTacoToken {
     /// @notice Total number of tokens in circulation
     uint public constant totalSupply = 395097860e18; // 395,097,860 million eTaco
 
-    /// @notice Allowance amounts on behalf of others
+    /// @dev Allowance amounts on behalf of others
     mapping (address => mapping (address => uint96)) internal allowances;
 
-    /// @notice Official record of token balances for each account
+    /// @dev Official record of token balances for each account
     mapping (address => uint96) internal balances;
 
-    /// @notice A record of each accounts delegate
+    /// @dev A record of each accounts delegate
     mapping (address => address) public delegates;
 
     /// @notice A checkpoint for marking number of votes from a given block
@@ -86,8 +86,8 @@ contract eTacoToken {
      */
     function approve(address spender, uint rawAmount) external returns (bool) {
         uint96 amount;
-        if (rawAmount == uint(-1)) {
-            amount = uint96(-1);
+        if (rawAmount == type(uint256).max) {
+            amount = type(uint96).max;
         } else {
             amount = safe96(rawAmount, "eTacoToken::approve: amount exceeds 96 bits");
         }
@@ -131,7 +131,7 @@ contract eTacoToken {
         uint96 spenderAllowance = allowances[src][spender];
         uint96 amount = safe96(rawAmount, "eTacoToken::approve: amount exceeds 96 bits");
 
-        if (spender != src && spenderAllowance != uint96(-1)) {
+        if (spender != src && spenderAllowance != type(uint96).max) {
             uint96 newAllowance = sub96(spenderAllowance, amount, "eTacoToken::transferFrom: transfer amount exceeds spender allowance");
             allowances[src][spender] = newAllowance;
 
@@ -166,7 +166,7 @@ contract eTacoToken {
         address signatory = ecrecover(digest, v, r, s);
         require(signatory != address(0), "eTacoToken::delegateBySig: invalid signature");
         require(nonce == nonces[signatory]++, "eTacoToken::delegateBySig: invalid nonce");
-        require(now <= expiry, "eTacoToken::delegateBySig: signature expired");
+        require(block.timestamp <= expiry, "eTacoToken::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
@@ -294,7 +294,7 @@ contract eTacoToken {
         return a - b;
     }
 
-    function getChainId() internal pure returns (uint) {
+    function getChainId() internal view returns (uint) {
         uint256 chainId;
         assembly { chainId := chainid() }
         return chainId;
