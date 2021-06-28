@@ -23,8 +23,13 @@ library TacoswapV2Library {
                 hex'ff',
                 factory,
                 keccak256(abi.encodePacked(token0, token1)),
+<<<<<<< HEAD
                 hex'46ac5724c2efcc25a54d4c6d9ce7d61b0e0e9f74c7bed11c72e59d923209d6e4' // init code hash
             )))));
+=======
+                hex'e0c1140582def20a3e27ee6bc59623d31d4093d50ec532fc36467e8809cc1ac0' // init code hash
+            ))));
+>>>>>>> b43f5faffce6686913d590f82a548b5dea461654
     }
 
     // fetches and sorts the reserves for a pair

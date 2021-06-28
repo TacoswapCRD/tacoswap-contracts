@@ -4,12 +4,13 @@ module.exports = async function ({ ethers, getNamedAccounts, deployments }) {
   
     const { deployer } = await getNamedAccounts()
   
-    const taco = await ethers.getContract("ERC20Mock")
+    // const taco = await ethers.getContract("ERC20Mock")
+    const TACO_ADDRESS = "0x41C028a4C1F461eBFC3af91619b240004ebAD216";
     const etaco = await  ethers.getContract("eTacoToken");
   
     await deploy("TacoToETaco", {
       from: deployer,
-      args: [taco.address, etaco.address],
+      args: [TACO_ADDRESS, etaco.address],
       log: true,
     })
   }
