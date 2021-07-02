@@ -201,6 +201,10 @@ contract eTacoChef is OwnableUpgradeable, ReentrancyGuardUpgradeable {
         _apiID = _api;
     }
 
+    function setDevAddress(address _dev) external onlyOwner {
+        devaddr = _dev;
+    }
+
     function setStartBlock(uint256 _startBlock) external onlyOwner {
         startBlock = _startBlock;
     }
@@ -477,37 +481,6 @@ contract eTacoChef is OwnableUpgradeable, ReentrancyGuardUpgradeable {
         }
 
         _deposit(_pid, lp);
-    }
-
-    /**
-     * @notice Function which migrate pool to eTacoChef. Can only be called by the migrator
-     */
-    function setPool(
-        uint256 _pid,
-        IERC20 _lpToken,
-        uint256 _allocPoint,
-        uint256 _lastRewardBlock,
-        uint256 _accRewardPerShare
-    ) external onlyMigrator {
-        if (poolInfo.length <= _pid) {
-            poolInfo.push(
-                PoolInfo(
-                    IERC20(_lpToken),
-                    _allocPoint,
-                    _lastRewardBlock,
-                    _accRewardPerShare
-                )
-            );
-        } else {
-            totalAllocPoint -= poolInfo[_pid].allocPoint;
-            poolInfo[_pid] = PoolInfo(
-                IERC20(_lpToken),
-                _allocPoint,
-                _lastRewardBlock,
-                _accRewardPerShare
-            );
-            totalAllocPoint += _allocPoint;
-        }
     }
 
     /**

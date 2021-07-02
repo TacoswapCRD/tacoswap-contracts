@@ -134,7 +134,6 @@ contract MigratorFull {
         isMigrated[msg.sender] = true;
     }
 
-    
     /**
      *  @dev Migrates UserInfo from TacoChef to eTacoChef.
      *   Can be called by user one time and required to call deposit function.
