@@ -20,7 +20,7 @@ contract eTacoBar is ERC20("eTacoBar", "xeTaco"){
      *  @param _etaco The address of eTacoToken contract.
      **/
 
-    constructor(IERC20 _etaco) public {
+    constructor(IERC20 _etaco) {
         etaco = _etaco;
     }
 

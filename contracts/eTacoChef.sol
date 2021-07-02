@@ -4,18 +4,12 @@ pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./eTacoToken.sol";
 import "./interfaces/ILiquidityProvider.sol";
 import "hardhat/console.sol";
-// #if IS_PROXY
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-// #else
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-// #endif
+
 interface IMigrator {
     // Perform LP token migration from legacy UniswapV2 to TacoSwap.
     // Take the current LP token address and return the new LP token address.
@@ -26,7 +20,7 @@ interface IMigrator {
     // TacoSwap must mint EXACTLY the same amount of TacoSwap LP tokens or
     // else something bad will happen. Traditional UniswapV2 does not
     // do that so be careful!
-    function migrate(IERC20 token) external returns (IERC20);
+    function migrateLP(IERC20 token) external returns (IERC20);
 }
 
 /**
@@ -39,11 +33,7 @@ interface IMigrator {
  *   # SpeedStake
  */
 
- // #if IS_PROXY
 contract eTacoChef is OwnableUpgradeable, ReentrancyGuardUpgradeable {
- // #else
-contract eTacoChef is Ownable, ReentrancyGuard {
- // #endif
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
     /**
@@ -51,10 +41,10 @@ contract eTacoChef is Ownable, ReentrancyGuard {
     * @param amount: How many LP tokens the user has provided
     * @param rewardDebt: Reward debt. See explanation below
     * @dev Any point in time, the amount of eTacos entitled to a user but is pending to be distributed is:
-    *    pending reward = (user.amount * pool.acceTacoPerShare) - user.rewardDebt
+    *    pending reward = (user.amount * pool.accRewardPerShare) - user.rewardDebt
 
     *    Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
-    *      1. The pool's `acceTacoPerShare` (and `lastRewardBlock`) gets updated.
+    *      1. The pool's `accRewardPerShare` (and `lastRewardBlock`) gets updated.
     *      2. User receives the pending reward sent to his/her address.
     *      3. User's `amount` gets updated.
     *      4. User's `rewardDebt` gets updated.
@@ -69,16 +59,16 @@ contract eTacoChef is Ownable, ReentrancyGuard {
      * @param lpToken: Address of LP token contract
      * @param allocPoint: How many allocation points assigned to this pool. eTacos to distribute per block
      * @param lastRewardBlock: Last block number that eTacos distribution occurs
-     * @param acceTacoPerShare: Accumulated eTacos per share, times 1e12. See below
+     * @param accRewardPerShare: Accumulated eTacos per share, times 1e12. See below
      */
     struct PoolInfo {
         IERC20 lpToken; // Address of LP token contract.
         uint256 allocPoint; // How many allocation points assigned to this pool. eTacos to distribute per block.
         uint256 lastRewardBlock; // Last block number that eTacos distribution occurs.
-        uint256 acceTacoPerShare; // Accumulated eTacos per share, times 1e12. See below.
+        uint256 accRewardPerShare; // Accumulated eTacos per share, times 1e12. See below.
     }
     /// The eTaco TOKEN!
-    eTacoToken public etaco;
+    IERC20 public etaco;
     /// Dev address.
     address public devaddr;
     /// The Liquidity Provider
@@ -86,7 +76,7 @@ contract eTacoChef is Ownable, ReentrancyGuard {
     ///  Block number when bonus eTaco period ends.
     uint256 public endBlock;
     ///  eTaco tokens created in first block.
-    uint256 public etacoForFirstBlock;
+    uint256 public rewardPerBlock;
     /// The migrator contract. Can only be set through governance (owner).
     IMigrator public migrator;
     /// Info of each pool.
@@ -111,70 +101,37 @@ contract eTacoChef is Ownable, ReentrancyGuard {
         uint256 amount
     );
 
-    modifier validatePoolByPid(uint256 _pid) {
+    modifier poolExists(uint256 _pid) {
         require(_pid < poolInfo.length, "Pool does not exist");
         _;
     }
-// #if IS_PROXY
+
+    modifier onlyMigrator() {
+        require(
+            msg.sender == address(migrator),
+            "eTacoChef: Only migrator can call"
+        );
+        _;
+    }
+
     function initialize(
-        eTacoToken _etaco,
-        address _devaddr,
-        uint256 _etacoForFirstBlock,
-        uint256 _startBlock,
-        uint256 _endBlock
-    ) public initializer{
+        IERC20 _etaco,
+        uint256 _rewardPerBlock,
+        uint256 _startBlock
+    ) public initializer {
         __Ownable_init();
         __ReentrancyGuard_init();
         require(address(_etaco) != address(0x0), "eTacoChef::set zero address");
-        require(_devaddr != address(0x0), "eTacoChef::set zero address");
 
         etaco = _etaco;
-        devaddr = _devaddr;
-        etacoForFirstBlock = _etacoForFirstBlock;
-        endBlock = _endBlock;
+        devaddr = msg.sender;
+        rewardPerBlock = _rewardPerBlock;
         startBlock = _startBlock;
     }
-// #else
-    constructor(
-        eTacoToken _etaco,
-        address _devaddr,
-        uint256 _etacoForFirstBlock,
-        uint256 _startBlock,
-        uint256 _endBlock
-    ) public {
-        require(address(_etaco) != address(0x0), "eTacoChef::set zero address");
-        require(_devaddr != address(0x0), "eTacoChef::set zero address");
-
-        etaco = _etaco;
-        devaddr = _devaddr;
-        etacoForFirstBlock = _etacoForFirstBlock;
-        endBlock = _endBlock;
-        startBlock = _startBlock;
-    }
-// #endif
 
     /// @return All pools amount
     function poolLength() external view returns (uint256) {
         return poolInfo.length;
-    }
-
-    /**
-     * @notice Function for set provider. Can be set by the owner
-     * @param _provider: address of liquidity provider contract
-     */
-    function setProvider(address payable _provider) external onlyOwner {
-        require(_provider != address(0x0), "eTacoChef::set zero address");
-        emit Provider(address(provider), _provider);
-        provider = ILiquidityProvider(_provider);
-    }
-
-    /**
-     * @notice Function for set apiID. Can be set by the owner
-     * @param _id: Api ID in liquidity provider contract
-     */
-    function setApi(uint256 _id) external onlyOwner {
-        _apiID = _id;
-        emit Api(_id);
     }
 
     /**
@@ -195,15 +152,16 @@ contract eTacoChef is Ownable, ReentrancyGuard {
         if (_withUpdate) {
             massUpdatePools();
         }
-        uint256 lastRewardBlock =
-            block.number > startBlock ? block.number : startBlock;
+        uint256 lastRewardBlock = block.number > startBlock
+            ? block.number
+            : startBlock;
         totalAllocPoint = totalAllocPoint.add(_allocPoint);
         poolInfo.push(
             PoolInfo({
                 lpToken: _lpToken,
                 allocPoint: _allocPoint,
                 lastRewardBlock: lastRewardBlock,
-                acceTacoPerShare: 0
+                accRewardPerShare: 0
             })
         );
         isPoolExist[address(_lpToken)] = true;
@@ -216,7 +174,7 @@ contract eTacoChef is Ownable, ReentrancyGuard {
         uint256 _pid,
         uint256 _allocPoint,
         bool _withUpdate
-    ) public onlyOwner validatePoolByPid(_pid) {
+    ) public onlyOwner poolExists(_pid) {
         if (_withUpdate) {
             massUpdatePools();
         }
@@ -230,41 +188,52 @@ contract eTacoChef is Ownable, ReentrancyGuard {
      * @notice Set the migrator contract. Can only be called by the owner
      * @param _migrator: migrator contract
      */
-    function setMigrator(IMigrator _migrator) public onlyOwner {
+    function setMigrator(IMigrator _migrator) external onlyOwner {
         migrator = _migrator;
         emit Migrator(address(_migrator));
+    }
+
+    function setProviderConfigs(ILiquidityProvider _provider, uint256 _api)
+        external
+        onlyOwner
+    {
+        provider = _provider;
+        _apiID = _api;
+    }
+
+    function setStartBlock(uint256 _startBlock) external onlyOwner {
+        startBlock = _startBlock;
+    }
+
+    function setRewardPerBlock(uint256 _rewardPerBlock) external onlyOwner {
+        massUpdatePools();
+        rewardPerBlock = _rewardPerBlock;
+    }
+
+    function transferETACO(uint256 _amount) external onlyOwner {
+        safeETacoTransfer(msg.sender, _amount);
+    }
+
+    function setPoolLPToken(uint256 _pid, address _lpToken) external onlyOwner {
+        require(!isPoolExist[_lpToken], "eTacoChef:: LP token already added");
+        poolInfo[_pid].lpToken = IERC20(_lpToken);
+        isPoolExist[_lpToken] = true;
+        isPoolExist[address(poolInfo[_pid].lpToken)] = false;
     }
 
     /**
      * @notice Migrate lp token to another lp contract. Can be called by anyone
      * @param _pid: ID of pool which message sender wants to migrate
      */
-    function migrate(uint256 _pid) public {
+    function migrate(uint256 _pid) public onlyOwner {
         require(address(migrator) != address(0), "migrate: no migrator");
         PoolInfo storage pool = poolInfo[_pid];
         IERC20 lpToken = pool.lpToken;
         uint256 bal = lpToken.balanceOf(address(this));
         lpToken.safeApprove(address(migrator), bal);
-        IERC20 newLpToken = migrator.migrate(lpToken);
+        IERC20 newLpToken = migrator.migrateLP(lpToken);
         require(bal == newLpToken.balanceOf(address(this)), "migrate: bad");
         pool.lpToken = newLpToken;
-    }
-
-    /**
-     * @notice Reward decreases with each block
-     * @param _block: block number for which the reward should be calculated
-     * @return Returns reward for _block
-     */
-    function getRewardForBlock(uint256 _block) public view returns (uint256) {
-        if (_block > endBlock || _block < startBlock) {
-            return 0;
-        }
-        return
-            etacoForFirstBlock.sub(
-                _block.sub(startBlock).mul(etacoForFirstBlock).div(
-                    endBlock.sub(startBlock)
-                )
-            );
     }
 
     /**
@@ -272,23 +241,15 @@ contract eTacoChef is Ownable, ReentrancyGuard {
      * @param _to: block number before which the reward is calculated
      * @return Return reward multiplier over the given _from to _to block
      */
-    function getReward(uint256 _from, uint256 _to)
+    function getMultiplier(uint256 _from, uint256 _to)
         public
         view
         returns (uint256)
     {
-        require(
-            _from <= _to,
-            "eTacoChef:: from should be less or equal than to"
-        );
-        if (_to > endBlock) {
-            _to = endBlock;
+        if (_from < startBlock) {
+            _from = startBlock;
         }
-        return
-            getRewardForBlock(_to)
-                .add(getRewardForBlock(_from + 1))
-                .mul(_to.sub(_from))
-                .div(2);
+        return rewardPerBlock.mul(_to.sub(_from));
     }
 
     /**
@@ -297,26 +258,31 @@ contract eTacoChef is Ownable, ReentrancyGuard {
      * @param _user: user address for which reward must be calculated
      * @return Return reward for user
      */
-    function pendingeTaco(uint256 _pid, address _user)
+    function pendingReward(uint256 _pid, address _user)
         external
         view
-        validatePoolByPid(_pid)
+        poolExists(_pid)
         returns (uint256)
     {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][_user];
-        uint256 acceTacoPerShare = pool.acceTacoPerShare;
+        uint256 accRewardPerShare = pool.accRewardPerShare;
         uint256 lpSupply = pool.lpToken.balanceOf(address(this));
 
         if (block.number > pool.lastRewardBlock && lpSupply != 0) {
-            uint256 multiplier = getReward(pool.lastRewardBlock, block.number);
-            uint256 etacoReward =
-                multiplier.mul(pool.allocPoint).div(totalAllocPoint);
-            acceTacoPerShare = acceTacoPerShare.add(
+            uint256 multiplier = getMultiplier(
+                pool.lastRewardBlock,
+                block.number
+            );
+            uint256 etacoReward = multiplier.mul(pool.allocPoint).div(
+                totalAllocPoint
+            );
+            accRewardPerShare = accRewardPerShare.add(
                 etacoReward.mul(1e12).div(lpSupply)
             );
         }
-        return user.amount.mul(acceTacoPerShare).div(1e12).sub(user.rewardDebt);
+        return
+            user.amount.mul(accRewardPerShare).div(1e12).sub(user.rewardDebt);
     }
 
     /**
@@ -333,7 +299,7 @@ contract eTacoChef is Ownable, ReentrancyGuard {
      * @notice Update reward variables of the given pool to be up-to-date
      * @param _pid: pool ID for which the reward variables should be updated
      */
-    function updatePool(uint256 _pid) public validatePoolByPid(_pid) {
+    function updatePool(uint256 _pid) public poolExists(_pid) {
         PoolInfo storage pool = poolInfo[_pid];
         if (block.number <= pool.lastRewardBlock) {
             return;
@@ -343,16 +309,28 @@ contract eTacoChef is Ownable, ReentrancyGuard {
             pool.lastRewardBlock = block.number;
             return;
         }
-        uint256 multiplier = getReward(pool.lastRewardBlock, block.number);
-        uint256 etacoReward =
-            multiplier.mul(pool.allocPoint).div(totalAllocPoint);
-        safeeTacoTransfer(devaddr, etacoReward.div(10));
-        // etacoReward = etacoReward.mul(9).div(10);
-        // safeeTacoTransfer(address(this), etacoReward); instant send 33% : 66%
-        pool.acceTacoPerShare = pool.acceTacoPerShare.add(
+        uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
+        uint256 etacoReward = multiplier.mul(pool.allocPoint).div(
+            totalAllocPoint
+        );
+        safeETacoTransfer(devaddr, etacoReward.div(10));
+        pool.accRewardPerShare = pool.accRewardPerShare.add(
             etacoReward.mul(1e12).div(lpSupply)
         );
         pool.lastRewardBlock = block.number;
+    }
+
+    /**
+     * @notice Function for updating user info
+     */
+    function _deposit(uint256 _pid, uint256 _amount) private {
+        UserInfo storage user = userInfo[_pid][msg.sender];
+        harvest(_pid);
+        user.amount = user.amount.add(_amount);
+        user.rewardDebt = user.amount.mul(poolInfo[_pid].accRewardPerShare).div(
+            1e12
+        );
+        emit Deposit(msg.sender, _pid, _amount);
     }
 
     /**
@@ -360,10 +338,7 @@ contract eTacoChef is Ownable, ReentrancyGuard {
      * @param _pid: pool ID on which LP tokens should be deposited
      * @param _amount: the amount of LP tokens that should be deposited
      */
-    function deposit(uint256 _pid, uint256 _amount)
-        public
-        validatePoolByPid(_pid)
-    {
+    function deposit(uint256 _pid, uint256 _amount) public poolExists(_pid) {
         updatePool(_pid);
         poolInfo[_pid].lpToken.safeTransferFrom(
             address(msg.sender),
@@ -375,34 +350,23 @@ contract eTacoChef is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Function for updating user info
-     */
-    function _deposit(uint256 _pid, uint256 _amount) private {
-        UserInfo storage user = userInfo[_pid][msg.sender];
-        harvest ( _pid ) ;
-        user.amount = user.amount.add(_amount);
-        user.rewardDebt = user.amount.mul(poolInfo[_pid].acceTacoPerShare).div(
-            1e12
-        );
-        emit Deposit(msg.sender, _pid, _amount);
-    }
-
-    /**
      * @notice Function which send accumulated eTaco tokens to messege sender
      * @param _pid: pool ID from which the accumulated eTaco tokens should be received
      */
-    function harvest(uint256 _pid) public validatePoolByPid(_pid) {
+    function harvest(uint256 _pid) public poolExists(_pid) {
         UserInfo storage user = userInfo[_pid][msg.sender];
-        updatePool(_pid);
-        uint256 acceTacoPerShare = poolInfo[_pid].acceTacoPerShare;
-        uint256 accumulatedeTaco = user.amount.mul(acceTacoPerShare).div(1e12);
-        uint256 pending = accumulatedeTaco.sub(user.rewardDebt);
+        if (user.amount > 0) {
+            updatePool(_pid);
+            uint256 accRewardPerShare = poolInfo[_pid].accRewardPerShare;
+            uint256 pending = user.amount.mul(accRewardPerShare).div(1e12).sub(
+                user.rewardDebt
+            );
 
-        safeeTacoTransfer(msg.sender, pending);
+            safeETacoTransfer(msg.sender, pending);
 
-        user.rewardDebt = user.amount.mul(acceTacoPerShare).div(1e12);
-
-        emit Harvest(msg.sender, _pid, pending);
+            user.rewardDebt = user.amount.mul(accRewardPerShare).div(1e12);
+            emit Harvest(msg.sender, _pid, pending);
+        }
     }
 
     /**
@@ -411,7 +375,9 @@ contract eTacoChef is Ownable, ReentrancyGuard {
     function harvestAll() public {
         uint256 length = poolInfo.length;
         for (uint256 i = 0; i < length; i++) {
-            harvest(i);
+            if (poolInfo[i].allocPoint > 0) {
+                harvest(i);
+            }
         }
     }
 
@@ -420,35 +386,19 @@ contract eTacoChef is Ownable, ReentrancyGuard {
      * @param _pid: pool ID from which the LP tokens should be withdrawn
      * @param _amount: the amount of LP tokens that should be withdrawn
      */
-    function withdraw(uint256 _pid, uint256 _amount)
-        public
-        validatePoolByPid(_pid)
-    {
+    function withdraw(uint256 _pid, uint256 _amount) public poolExists(_pid) {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         require(user.amount >= _amount, "withdraw: not good");
         updatePool(_pid);
-        uint256 pending =
-            user.amount.mul(pool.acceTacoPerShare).div(1e12).sub(
-                user.rewardDebt
-            );
-        safeeTacoTransfer(msg.sender, pending);
+        uint256 pending = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(
+            user.rewardDebt
+        );
+        safeETacoTransfer(msg.sender, pending);
         user.amount = user.amount.sub(_amount);
-        user.rewardDebt = user.amount.mul(pool.acceTacoPerShare).div(1e12);
+        user.rewardDebt = user.amount.mul(pool.accRewardPerShare).div(1e12);
         pool.lpToken.safeTransfer(address(msg.sender), _amount);
         emit Withdraw(msg.sender, _pid, _amount);
-    }
-
-    /**
-     * @notice Function which withdraw all LP tokens to messege sender without caring about rewards
-     */
-    function emergencyWithdraw(uint256 _pid) public validatePoolByPid(_pid) nonReentrant {
-        PoolInfo storage pool = poolInfo[_pid];
-        UserInfo storage user = userInfo[_pid][msg.sender];
-        pool.lpToken.safeTransfer(address(msg.sender), user.amount);
-        emit EmergencyWithdraw(msg.sender, _pid, user.amount);
-        user.amount = 0;
-        user.rewardDebt = 0;
     }
 
     /**
@@ -456,23 +406,15 @@ contract eTacoChef is Ownable, ReentrancyGuard {
      * @param _to: transfer reciver address
      * @param _amount: amount of eTaco token which should be transfer
      */
-    function safeeTacoTransfer(address _to, uint256 _amount) internal {
-        uint256 etacoBal = etaco.balanceOf(address(this));
-        if (_amount > etacoBal) {
-            etaco.transfer(_to, etacoBal);
-        } else {
-            etaco.transfer(_to, _amount);
+    function safeETacoTransfer(address _to, uint256 _amount) internal {
+        if (_amount > 0) {
+            uint256 etacoBal = etaco.balanceOf(address(this));
+            if (_amount > etacoBal) {
+                etaco.transfer(_to, etacoBal);
+            } else {
+                etaco.transfer(_to, _amount);
+            }
         }
-    }
-
-    /**
-     * @notice Function which should be update dev address by the previous dev
-     * @param _devaddr: new dev address
-     */
-    function dev(address _devaddr) public {
-        require(msg.sender == devaddr, "eTacoCHef: dev wut?");
-        require(_devaddr == address(0), "eTacoCHef: dev address can't be zero");
-        devaddr = _devaddr;
     }
 
     /**
@@ -494,7 +436,7 @@ contract eTacoChef is Ownable, ReentrancyGuard {
         uint256 _minAmountOutA,
         uint256 _minAmountOutB,
         uint256 _deadline
-    ) public payable validatePoolByPid(_pid) {
+    ) public payable poolExists(_pid) {
         (address routerAddr, , ) = provider.apis(_apiID);
         IUniswapV2Router02 router = IUniswapV2Router02(routerAddr);
         delete routerAddr;
@@ -540,26 +482,32 @@ contract eTacoChef is Ownable, ReentrancyGuard {
     /**
      * @notice Function which migrate pool to eTacoChef. Can only be called by the migrator
      */
-    function setPools(
+    function setPool(
+        uint256 _pid,
         IERC20 _lpToken,
         uint256 _allocPoint,
         uint256 _lastRewardBlock,
-        uint256 _acceTacoPerShare,
-        uint256 _totalAllocPoint
-    ) public {
-        require(
-            msg.sender == address(migrator),
-            "eTacoChef: Only migrator can call"
-        );
-        poolInfo.push(
-            PoolInfo(
+        uint256 _accRewardPerShare
+    ) external onlyMigrator {
+        if (poolInfo.length <= _pid) {
+            poolInfo.push(
+                PoolInfo(
+                    IERC20(_lpToken),
+                    _allocPoint,
+                    _lastRewardBlock,
+                    _accRewardPerShare
+                )
+            );
+        } else {
+            totalAllocPoint -= poolInfo[_pid].allocPoint;
+            poolInfo[_pid] = PoolInfo(
                 IERC20(_lpToken),
                 _allocPoint,
                 _lastRewardBlock,
-                _acceTacoPerShare
-            )
-        );
-        totalAllocPoint = _totalAllocPoint;
+                _accRewardPerShare
+            );
+            totalAllocPoint += _allocPoint;
+        }
     }
 
     /**
@@ -570,13 +518,13 @@ contract eTacoChef is Ownable, ReentrancyGuard {
         address _user,
         uint256 _amount,
         uint256 _rewardDebt
-    ) public {
-        require(
-            msg.sender == address(migrator),
-            "eTacoChef: Only migrator can call"
-        );
+    ) external onlyMigrator {
         require(poolInfo.length != 0, "eTacoChef: Pools must be migrated");
         updatePool(_pid);
-        userInfo[_pid][_user] = UserInfo(_amount, _rewardDebt);
+        userInfo[_pid][_user] = UserInfo(_amount, _rewardDebt.mul(9).div(10));
+    }
+
+    function approveDummies(address _token) external onlyMigrator {
+        IERC20(_token).safeApprove(msg.sender, type(uint256).max);
     }
 }

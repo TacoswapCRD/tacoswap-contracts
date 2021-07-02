@@ -6,9 +6,7 @@ interface IETacoChef {
 
     function startBlock() external view returns (uint256);
 
-    function setProvider(address) external;
-
-    function setApi(uint256) external;
+    function approveDummies(address) external;
 
     function getrewardForBlock(uint256) external view returns (uint256);
 
@@ -44,9 +42,9 @@ interface IETacoChef {
 
     function deposit(uint256, uint256) external;
 
-    function setPools(
-        address,
+    function setPool(
         uint256,
+        address,
         uint256,
         uint256,
         uint256

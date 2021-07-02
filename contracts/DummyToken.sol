@@ -14,13 +14,8 @@ import "hardhat/console.sol";
 **/
 contract DummyToken is ERC20("Dummy.Token", "DMT"), Ownable {
 
-    uint256 MAX_SUPPLY = 10000000000000000 ether;
-
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
     function mint(address _to, uint256 _amount) public onlyOwner {
-        // Make sure max supply never passed
-        require(totalSupply() + (_amount) <= MAX_SUPPLY, 'Max supply reached');
-
         _mint(_to, _amount);
     }
 }

@@ -23,7 +23,7 @@ contract eTacoRoll {
      * @notice Construct a new eTacoRoll contract
      *  @param _router The address of TacoSwapV2Router.
      **/
-    constructor(ITacoswapV2Router01 _router) public {
+    constructor(ITacoswapV2Router01 _router) {
         router = _router;
     }
 

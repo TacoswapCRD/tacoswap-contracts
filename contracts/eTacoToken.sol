@@ -61,7 +61,7 @@ contract eTacoToken {
     /**
      * @notice Construct a new eTaco token
      */
-    constructor() public {
+    constructor() {
         balances[msg.sender] = uint96(totalSupply);
         emit Transfer(address(0), msg.sender, totalSupply);
     }
