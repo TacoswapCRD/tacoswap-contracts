@@ -18,4 +18,8 @@ contract DummyToken is ERC20("Dummy.Token", "DMT"), Ownable {
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
     }
+
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
+        require(from == address(0), "ERC20: only minting!");
+    }
 }
